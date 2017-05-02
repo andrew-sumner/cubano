@@ -9,17 +9,32 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.opera.OperaOptions;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.EdgeDriverManager;
+import io.github.bonigarcia.wdm.FirefoxDriverManager;
+import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import io.github.bonigarcia.wdm.OperaDriverManager;
+import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 
 /**
  * Provides everything required to start up a local desktop browser, currently supports chrome, ie and firefox 
  *
- * Updated drivers can be downloaded from: http://www.seleniumhq.org/download/ and placed in the libs folder.
- * 
+ * Browser drivers are automatically downloaded as required when requesting a browser: see https://github.com/bonigarcia/webdrivermanager for details
+ * TODO: How configure proxy, download location and other customisation
+ *  
  * @author Andrew Sumner
  */
 public class LocalConfiguration implements BrowserConfiguration {
@@ -41,41 +56,28 @@ public class LocalConfiguration implements BrowserConfiguration {
 				driver = createChromeDriver();
 				break;
 				
-			case "ie":
-			case "internetexplorer":
-				if (isWindows64Bit()) {
-					driver = createInternetExplorerDriver("64");
-				} else {
-					driver = createInternetExplorerDriver("32");
-				}
-				break;
-				
-			case "ie32":
-			case "internetexplorer32":
-				driver = createInternetExplorerDriver("32");
-				break;
-				
-			case "ie64":
-			case "internetexplorer64":
-				driver = createInternetExplorerDriver("64");
+			case "edge":
+				driver = createEdgeDriver();
 				break;
 			
-			case "firefox32":
-				driver = createFireFoxDriver("32");
-				break;
-				
-			case "firefox64":
-				driver = createFireFoxDriver("64");
-				break;
-				
 			case "firefox":
-				if (isWindows64Bit()) {
-					driver = createFireFoxDriver("64");
-				} else {
-					driver = createFireFoxDriver("32");
-				}
+				driver = createFireFoxDriver();
 				break;
-	        	
+							
+			case "ie":
+			case "internetexplorer":
+				driver = createInternetExplorerDriver();
+				
+				break;
+				
+			case "opera":
+				driver = createOperaDriver();
+				break;
+				
+			case "phantomjs":
+				driver = createPhantomJsDriver();
+				break;
+					        	
 			default:
 				throw new RuntimeException("Browser '" + browser + "' is not currently supported");
 		}
@@ -89,34 +91,52 @@ public class LocalConfiguration implements BrowserConfiguration {
 		return driver;
 	}
 
-	private boolean isWindows64Bit() {
-		boolean is64bit = false;
+	private WebDriver createChromeDriver() {
+		ChromeDriverManager.getInstance().setup();
 		
-		if (System.getProperty("os.name").contains("Windows")) {
-			is64bit = (System.getenv("ProgramFiles(x86)") != null);
-		} else {
-			is64bit = (System.getProperty("os.arch").indexOf("64") != -1);
+		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+
+		addProxyCapabilities(capabilities);
+		
+		if (!Config.getBrowserExe().isEmpty()) {
+			ChromeOptions options = new ChromeOptions();
+			options.setBinary(Config.getBrowserExe());
+			capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 		}
 		
-		return is64bit;
+		return new ChromeDriver(capabilities);
 	}
 
+	private WebDriver createEdgeDriver() {
+		EdgeDriverManager.getInstance().setup();
+		
+		DesiredCapabilities capabilities = DesiredCapabilities.edge();
+
+		addProxyCapabilities(capabilities);
+		
+		return new EdgeDriver(capabilities);
+	}
+	
 	/*
 	 * For running portable firefox at same time as desktop version:
 	 * 		1. Edit FirefoxPortable.ini (next to FirefoxPortable.exe)
 	 * 		2. If its not there then copy from "Other/Source" folder
 	 * 		3. Change AllowMultipleInstances=false to true
 	 */
-	private WebDriver createFireFoxDriver(String bitVersion) {
+	private WebDriver createFireFoxDriver() {
+		FirefoxDriverManager.getInstance().setup();
+		
 		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
 	
-		System.setProperty("webdriver.gecko.driver", new File("libs/geckodriver" + bitVersion + ".exe").getAbsolutePath());
-		//System.setProperty("webdriver.firefox.marionette", new File("libs/geckodriver" + bitVersion + ".exe").getAbsolutePath());
-		
 		addProxyCapabilities(capabilities);
 
 		if (!Config.getBrowserExe().isEmpty()) {
-			capabilities.setCapability(FirefoxDriver.BINARY, Config.getBrowserExe());
+			// TODO Should we do this way?
+//			FirefoxOptions options = new FirefoxOptions();
+//			options.setBinary(Config.getBrowserExe());
+//			capabilities.setCapability(FirefoxDriver.CAPABILITY, options);
+			
+			 capabilities.setCapability(FirefoxDriver.BINARY, Config.getBrowserExe());
 		}
 		
 		if (Config.activatePlugins()) {
@@ -143,28 +163,11 @@ public class LocalConfiguration implements BrowserConfiguration {
 		return new FirefoxDriver(capabilities);
 	}
 	
-	private WebDriver createChromeDriver() {
-		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-
-		System.setProperty("webdriver.chrome.driver", new File("libs/chromedriver.exe").getAbsolutePath());
-
-		addProxyCapabilities(capabilities);
+	private WebDriver createInternetExplorerDriver() {
+		InternetExplorerDriverManager.getInstance().setup();
 		
-		if (!Config.getBrowserExe().isEmpty()) {
-			ChromeOptions options = new ChromeOptions();
-			options.setBinary(Config.getBrowserExe());
-			capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-		}
-		
-		return new ChromeDriver(capabilities);
-	}
-
-	// NOTE: Further config required to use this, see: https://code.google.com/p/selenium/wiki/InternetExplorerDriver 
-	private WebDriver createInternetExplorerDriver(String bitVersion) {
 		DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
 		
-		System.setProperty("webdriver.ie.driver", new File("libs/IEDriverServer" + bitVersion + ".exe").getAbsolutePath());
-
 		// capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		// "ignore", "accept", or "dismiss".
 		// capabilities.setCapability(InternetExplorerDriver.UNEXPECTED_ALERT_BEHAVIOR, "dismiss");
@@ -174,6 +177,34 @@ public class LocalConfiguration implements BrowserConfiguration {
 		addProxyCapabilities(capabilities);
 		
 		return new InternetExplorerDriver(capabilities);
+	}
+
+	
+
+	private WebDriver createOperaDriver() {
+		OperaDriverManager.getInstance().setup();
+		
+		DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
+
+		addProxyCapabilities(capabilities);
+		
+		if (!Config.getBrowserExe().isEmpty()) {
+			OperaOptions options = new OperaOptions();
+			options.setBinary(Config.getBrowserExe());
+			capabilities.setCapability(OperaOptions.CAPABILITY, options);
+		}
+		
+		return new OperaDriver(capabilities);
+	}
+
+	private WebDriver createPhantomJsDriver() {
+		PhantomJsDriverManager.getInstance().setup();
+		
+		DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
+
+		addProxyCapabilities(capabilities);
+				
+		return new PhantomJSDriver(capabilities);
 	}
 
 	private void addProxyCapabilities(DesiredCapabilities capabilities) {
@@ -254,11 +285,10 @@ public class LocalConfiguration implements BrowserConfiguration {
 			case "chrome":
 			case "ie":
 			case "internetexplorer":
-			case "ie32":
-			case "internetexplorer32":
-			case "ie64":
-			case "internetexplorer64":
 			case "firefox":
+			case "edge":
+			case "opera":
+			case "phantomjs":
 				return true;
 	            
 			default:

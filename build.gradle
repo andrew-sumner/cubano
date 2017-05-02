@@ -70,7 +70,8 @@ dependencies {
     // Database
     compile 'org.codejargon:fluentjdbc:1.3.1'
     	
-    // Selenium WebDriver -  Ensure also update all drivers in libs folder to same version    
+    // Selenium WebDriver    
+    compile 'io.github.bonigarcia:webdrivermanager:1.6.2'
     compile "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
     compile "org.seleniumhq.selenium:selenium-chrome-driver:${seleniumVersion}"
     compile "org.seleniumhq.selenium:selenium-ie-driver:${seleniumVersion}"
