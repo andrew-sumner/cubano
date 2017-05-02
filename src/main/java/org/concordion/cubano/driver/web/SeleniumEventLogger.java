@@ -101,7 +101,7 @@ public class SeleniumEventLogger implements WebDriverEventListener {
 			// continue;
 			// }
 			// }
-			// || className.startsWith("nz.govt.msd.driver.web.pagefactory.PageObjectAwareHtmlElementsLoader")
+			// || className.startsWith("org.concordion.cubano.driver.web.pagefactory.PageObjectAwareHtmlElementsLoader")
 
 			if (className.startsWith("com.sun.proxy.$Proxy")) {
 				proxyNames.add(className);

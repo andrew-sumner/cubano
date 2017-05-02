@@ -165,10 +165,10 @@ Further Reading:
 # Automating Services (REST / SOAP / etc)
 
 ## REST
-This framework includes {@link nz.govt.msd.driver.http.HttpEasy}, a fluent wrapper built around HttpUrlConnection that can easily send and receive REST messages.
+This framework includes {@link org.concordion.cubano.driver.http.HttpEasy}, a fluent wrapper built around HttpUrlConnection that can easily send and receive REST messages.
 
 ## SOAP
-This framework includes {@link nz.govt.msd.driver.http.HttpEasy}, a fluent wrapper built around HttpUrlConnection that can easily send and receive SOAP messages - if you have the soap message in an xml document.  
+This framework includes {@link org.concordion.cubano.driver.http.HttpEasy}, a fluent wrapper built around HttpUrlConnection that can easily send and receive SOAP messages - if you have the soap message in an xml document.  
 
 Alternatives:
 
@@ -230,7 +230,7 @@ this configuration file for a value.                                |
 
 
 ## HttpEasy
-{@link nz.govt.msd.driver.http.HttpEasy}: provides a fluent style wrapper around HttpURLConnection.  It can:
+{@link org.concordion.cubano.driver.http.HttpEasy}: provides a fluent style wrapper around HttpURLConnection.  It can:
 
 * handle most HTTP methods (GET, POST, HEAD, etc)
 * upload and download files
@@ -238,10 +238,10 @@ this configuration file for a value.                                |
 * handle corporate proxies 
 
 ## ActionWait
-{@link nz.govt.msd.utils.ActionWait}: Similar to Selenium's {@link org.openqa.selenium.support.ui.FluentWait} implementation but designed for long running tasks such as querying a database until some data appears and unlike FluentWait it handles exceptions other than RuntimeExceptions.
+{@link org.concordion.cubano.utils.ActionWait}: Similar to Selenium's {@link org.openqa.selenium.support.ui.FluentWait} implementation but designed for long running tasks such as querying a database until some data appears and unlike FluentWait it handles exceptions other than RuntimeExceptions.
 
 ## ActionTimer
-{@link nz.govt.msd.utils.ActionTimer}: a simple utility for logging duration of a task
+{@link org.concordion.cubano.utils.ActionTimer}: a simple utility for logging duration of a task
 
 ## Exception Handling
 As a general rule of thumb - don't!
@@ -286,8 +286,8 @@ The framework includes <a href="https://github.com/yandex-qatools/htmlelements" 
 
 We also provide a couple of interfaces that your component can implement that allow it to work with the framework more easily:
 
-* {@link nz.govt.msd.driver.web.pagefactory.WebDriverAware}: will supply the WebDriver to the component
-* {@link nz.govt.msd.driver.web.pagefactory.PageObjectAware}: will supply page object the component is on to the component 
+* {@link org.concordion.cubano.driver.web.pagefactory.WebDriverAware}: will supply the WebDriver to the component
+* {@link org.concordion.cubano.driver.web.pagefactory.PageObjectAware}: will supply page object the component is on to the component 
 
 # Guidelines
 These are general recommendations rather than hard and fast rules.
@@ -373,4 +373,4 @@ _DO_ use @timeout field annotation:
 ## Wait for anything else
 _NEVER_ use thread.sleep().  Ever!
 
-Use the frameworks built in {@link nz.govt.msd.utils.ActionWait} utility.
+Use the frameworks built in {@link org.concordion.cubano.utils.ActionWait} utility.
