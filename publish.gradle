@@ -7,9 +7,6 @@ ext {
     githubUrl = ''
     issuesUrl = ''
     vcsUrl =  
-
-    nexusUsername = ''
-    nexusPassword = ''
 }
 
 //task publishSnapshot(dependsOn: ['test', 'publishMainPublicationToMavenRepository'])

@@ -30,14 +30,6 @@ repositories {
 		url = 'http://oss.jfrog.org/oss-snapshot-local'
 	}
 	mavenCentral()
-	/*
-	maven {
-		url "http://nexus.ssi.govt.nz/content/repositories/ossjfrog-snapshots/"
-	}
-	maven {
-		url "http://nexus.ssi.govt.nz/content/groups/public"
-	}
-	*/
 }
 
 configurations {
@@ -148,14 +140,12 @@ javadoc {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
-    
+
     // To download through proxy, need to update <project root>\gradle\wrapper\gradle-wrapper.properties and change 
     //		distributionUrl property from https... to http...
+    // and uncomment follow line    
+    // distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
     
-    //TODO how get gradle to download distribution via Nexus without manually adding 
-    // Suggestion in here but not sure if feasible: https://discuss.gradle.org/t/host-gradle-wrapper-distributions-on-maven-central/543
-    //distributionUrl = "http://nexus.ssi.govt.nz/content/groups/public/org/gradle/gradle/${gradleVersion}/gradle-${gradleVersion}-bin.zip"
 }
 
 test {
