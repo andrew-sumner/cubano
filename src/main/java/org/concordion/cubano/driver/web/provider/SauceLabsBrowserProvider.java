@@ -12,17 +12,88 @@ import org.openqa.selenium.remote.SessionId;
 import com.google.gson.JsonElement;
 
 /**
- * BrowserStack selenium grid provider.
+ * SauceLabs selenium grid provider.
  * 
  * <p>Browser and device options: https://wiki.saucelabs.com/display/DOCS/Platform+Configurator</p> 
  */
 public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
-	private SauceLabsBrowserProvider(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
-		super(remoteType, browser, viewPort, capabilites);
-	}
-	
 	private static final String REMOTE_URL = "http://[USER_NAME]:[API_KEY]@ondemand.saucelabs.com:80/wd/hub";
 	private static final String TYPE = "application/json";
+	
+	/**
+	 * Constructor. Uses configuration for browser specified in the configuration file.
+	 */	
+	public SauceLabsBrowserProvider() {		
+		String browser = Config.getBrowser();
+		
+		if (browser == null) {
+			browser = "";
+		}
+		
+		// check desktop browsers
+		String[] browserDetails = browser.split(" ");
+		
+		if (browserDetails.length <= 2) {
+			String version = "";
+			
+			if (browserDetails.length == 2) {
+				version = browserDetails[1];
+			}
+		
+			switch (browserDetails[0]) {
+				case "chrome":
+					chrome(version);
+					break;
+					
+				case "internetExplorer":
+				case "ie":
+					internetExplorer(version);
+					break;
+			        
+				case "firefox":
+					firefox(version);
+					break;
+					
+				case "safari":
+					safari(version);
+					break;
+					
+				default:
+					break;
+			}
+		}
+		 
+		
+		
+		// check devices
+		switch (browser) {
+			case "iPhone6":
+				iPhone6();
+				break;
+				
+			case "iPhone6PlusEmulator":
+				iPhone6PlusEmulator();
+				break;
+		
+			case "samsungGalaxyS5":
+				samsungGalaxyS5();
+				break;
+				
+			case "samsungGalaxyS4Emulator":
+				samsungGalaxyS4Emulator();
+				break;
+				
+			case "googleNexus7CEmulator":
+				googleNexus7CEmulator();
+				break;
+				
+				
+			default:
+				break;
+		}
+		
+		throw new RuntimeException("Browser '" + browser + "' is not currently supported");
+	}
 	
 	@Override
 	protected String getRemoteDriverUrl() {
@@ -54,20 +125,20 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 		return details;
 	}
 		
-	private static SauceLabsBrowserProvider desktop(DesiredCapabilities caps, String browserName, String browserVersion) {
+	protected void desktop(DesiredCapabilities caps, String browserName, String browserVersion) {
 		String platform = caps.getCapability(CapabilityType.PLATFORM).toString();
 		
 		caps.setCapability("version", browserVersion);
 		caps.setCapability("screenResolution", DEFAULT_DESKTOP_SCREENSIZE);
 		caps.setCapability("name", String.format("%s %s, %s", browserName, browserVersion, platform));
 		
-		return new SauceLabsBrowserProvider(RemoteType.DESKTOP, browserName, DEFAULT_DESKTOP_VIEWPORT, caps);
+		this.setDetails(RemoteType.DESKTOP, browserName, DEFAULT_DESKTOP_VIEWPORT, caps);
 	}
 	
-	private static SauceLabsBrowserProvider desktop(DesiredCapabilities caps, String browserVersion) {
+	protected void desktop(DesiredCapabilities caps, String browserVersion) {
 		String browserName = caps.getCapability(CapabilityType.BROWSER_NAME).toString();
 		
-		return desktop(caps, browserName, browserVersion);
+		desktop(caps, browserName, browserVersion);
 	}
 	
 	/**
@@ -75,11 +146,11 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider firefox(String browserVersion) {
+	protected void firefox(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.firefox();
 		caps.setCapability("platform", "Windows 10");
 				
-		return desktop(caps, browserVersion);
+		desktop(caps, browserVersion);
 	}
 	
 	/**
@@ -87,11 +158,11 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider chrome(String browserVersion) {
+	protected void chrome(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.chrome();
 		caps.setCapability("platform", "Windows 10");		
 		
-		return desktop(caps, browserVersion);
+		desktop(caps, browserVersion);
 	}
 	
 	/**
@@ -99,11 +170,11 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider internetExplorer(String browserVersion) {
+	protected void internetExplorer(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
 		caps.setCapability("platform", "Windows 10");		
 		
-		return desktop(caps, "ie", browserVersion);
+		desktop(caps, "ie", browserVersion);
 	}
 
 	/**
@@ -111,41 +182,41 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider safari(String browserVersion) {
+	protected void safari(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.safari();
 		caps.setCapability("platform", "OS X 10.11");
 		
-		return desktop(caps, browserVersion);
+		desktop(caps, browserVersion);
 	}
-	
+		
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider googleNexus7CEmulator() {
+	protected void googleNexus7CEmulator() {
 		DesiredCapabilities caps = DesiredCapabilities.android();
 		caps.setCapability("deviceName", "Google Nexus 7C Emulator");
 		caps.setCapability("deviceOrientation", "portrait");
 		caps.setCapability("name", "Google Nexus 7C Emulator");
 		
-		return new SauceLabsBrowserProvider(RemoteType.DEVICE, "Google Nexus 7C Emulator", "?x?", caps);
+		this.setDetails(RemoteType.DEVICE, "Google Nexus 7C Emulator", "?x?", caps);
 	}
-	
+
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider samsungGalaxyS4Emulator() {
+	protected void samsungGalaxyS4Emulator() {
 		DesiredCapabilities caps = DesiredCapabilities.android();
 		caps.setCapability("deviceName", "Samsung Galaxy S4 Emulator");
 		caps.setCapability("deviceOrientation", "portrait");
 		caps.setCapability("name", "Samsung Galaxy S4 Emulator");
 		
-		return new SauceLabsBrowserProvider(RemoteType.DEVICE, "Samsung Galaxy S4 Emulator", "?x?", caps);
+		this.setDetails(RemoteType.DEVICE, "Samsung Galaxy S4 Emulator", "?x?", caps);
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider samsungGalaxyS5() {
+	protected void samsungGalaxyS5() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("deviceName", "Samsung Galaxy S5 Device");
@@ -154,13 +225,13 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 		caps.setCapability("browserName", "Chrome");
 		caps.setCapability("name", "Samsung Galaxy S5");
 		
-		return new SauceLabsBrowserProvider(RemoteType.DEVICE, "Samsung Galaxy S5", "?x?", caps);
+		this.setDetails(RemoteType.DEVICE, "Samsung Galaxy S5", "?x?", caps);
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider iPhone6PlusEmulator() {
+	protected void iPhone6PlusEmulator() {
 		DesiredCapabilities caps = DesiredCapabilities.iphone();
 		caps.setCapability("platform", "OS X 10.10");
 		caps.setCapability("version", "9.2");
@@ -168,13 +239,13 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 		caps.setCapability("deviceOrientation", "portrait");
 		caps.setCapability("name", "iPhone 6 Plus");
 		
-		return new SauceLabsBrowserProvider(RemoteType.DEVICE, "iPhone 6 Plus", "?x?", caps);		
+		this.setDetails(RemoteType.DEVICE, "iPhone 6 Plus", "?x?", caps);		
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static SauceLabsBrowserProvider iPhone6() {
+	protected void iPhone6() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 
 		caps.setCapability("deviceName", "iPhone 6 Device");
@@ -183,6 +254,6 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 		caps.setCapability("browserName", "Safari");
 		caps.setCapability("name", "iPhone 6");
 		
-		return new SauceLabsBrowserProvider(RemoteType.DEVICE, "iPhone 6", "?x?", caps);
+		this.setDetails(RemoteType.DEVICE, "iPhone 6", "?x?", caps);
 	}
 }

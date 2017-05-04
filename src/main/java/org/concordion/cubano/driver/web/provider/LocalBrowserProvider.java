@@ -3,7 +3,6 @@ package org.concordion.cubano.driver.web.provider;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.concordion.cubano.driver.web.provider.RemoteBrowserProvider.RemoteType;
 import org.concordion.cubano.utils.Config;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -91,7 +90,7 @@ public class LocalBrowserProvider implements BrowserProvider {
 		return driver;
 	}
 
-	private WebDriver createChromeDriver() {
+	protected WebDriver createChromeDriver() {
 		ChromeDriverManager.getInstance().setup();
 		
 		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -107,7 +106,7 @@ public class LocalBrowserProvider implements BrowserProvider {
 		return new ChromeDriver(capabilities);
 	}
 
-	private WebDriver createEdgeDriver() {
+	protected WebDriver createEdgeDriver() {
 		EdgeDriverManager.getInstance().setup();
 		
 		DesiredCapabilities capabilities = DesiredCapabilities.edge();
@@ -123,7 +122,7 @@ public class LocalBrowserProvider implements BrowserProvider {
 	 * 		2. If its not there then copy from "Other/Source" folder
 	 * 		3. Change AllowMultipleInstances=false to true
 	 */
-	private WebDriver createFireFoxDriver() {
+	protected WebDriver createFireFoxDriver() {
 		FirefoxDriverManager.getInstance().setup();
 		
 		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
@@ -163,7 +162,7 @@ public class LocalBrowserProvider implements BrowserProvider {
 		return new FirefoxDriver(capabilities);
 	}
 	
-	private WebDriver createInternetExplorerDriver() {
+	protected WebDriver createInternetExplorerDriver() {
 		InternetExplorerDriverManager.getInstance().setup();
 		
 		DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
@@ -179,7 +178,7 @@ public class LocalBrowserProvider implements BrowserProvider {
 		return new InternetExplorerDriver(capabilities);
 	}
 
-	private WebDriver createOperaDriver() {
+	protected WebDriver createOperaDriver() {
 		OperaDriverManager.getInstance().setup();
 		
 		DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
@@ -195,7 +194,7 @@ public class LocalBrowserProvider implements BrowserProvider {
 		return new OperaDriver(capabilities);
 	}
 
-	private WebDriver createPhantomJsDriver() {
+	protected WebDriver createPhantomJsDriver() {
 		PhantomJsDriverManager.getInstance().setup();
 		
 		DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
@@ -205,7 +204,7 @@ public class LocalBrowserProvider implements BrowserProvider {
 		return new PhantomJSDriver(capabilities);
 	}
 
-	private void addProxyCapabilities(DesiredCapabilities capabilities) {
+	protected void addProxyCapabilities(DesiredCapabilities capabilities) {
 		if (!Config.isProxyRequired()) {
 			return;
 		}

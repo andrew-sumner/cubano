@@ -1,6 +1,5 @@
 package org.concordion.cubano.driver.web.provider;
 
-import org.concordion.cubano.driver.web.provider.RemoteBrowserProvider.RemoteType;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -23,9 +22,11 @@ public interface BrowserProvider {
 	
 	/** 
 	 * ViewPort can mean different things on different devices:
-	 * 	- Desktop using Applitools-Eyes: internal dimensions of the browser
-	 *  - Desktop: external dimensions of the browser
-	 *  - Device: screen resolution (information only, is not used to set browser size)
+	 * <ul>
+	 * 	<li>Desktop using Applitools-Eyes: internal dimensions of the browser</li>
+	 *  <li>Desktop: external dimensions of the browser</li>
+	 *  <li>Device: screen resolution (information only, is not used to set browser size)</li>
+	 *  </ul>
 	 * @return the viewport size in format '{@literal <width>x<height>}' 
 	 */
 	public String getViewPort();

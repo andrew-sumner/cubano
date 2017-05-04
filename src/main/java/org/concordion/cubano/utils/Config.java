@@ -89,7 +89,7 @@ public class Config {
 		}
 
 		// Browser
-		browserProvider = getOptionalProperty("webdriver.browserprovider", "org.concordion.cubano.driver.web.LocalConfiguration");
+		browserProvider = getOptionalProperty("webdriver.browserprovider", "org.concordion.cubano.driver.web.provider.LocalBrowserProvider");
 		browserType = System.getProperty("browser");
 		if (browserType == null) {
 			browserType = getProperty("webdriver.browser");

@@ -38,6 +38,17 @@ public abstract class RemoteBrowserProvider implements BrowserProvider {
 	protected static final String DEFAULT_DESKTOP_SCREENSIZE = "1024x768";
 	protected static final String DEFAULT_DESKTOP_VIEWPORT = "950x600";
 	
+	private String browser;
+	private String viewPort;
+	private RemoteType remoteType;
+	private DesiredCapabilities capabilites;
+	
+	/**
+	 * Default constructor
+	 */
+	protected RemoteBrowserProvider() {		
+	}
+	
 	/**
 	 * Get the session details.
 	 * @param sessionId Session Id
@@ -50,12 +61,7 @@ public abstract class RemoteBrowserProvider implements BrowserProvider {
 	 * @return URL to access the remote driver.
 	 */
 	protected abstract String getRemoteDriverUrl();
-
-	private String browser;
-	private String viewPort;
-	private RemoteType remoteType;
-	private DesiredCapabilities capabilites;
-		
+	
 	/**
 	 * Constructor.
 	 * @param remoteType Type of system the browser is running on
@@ -63,13 +69,13 @@ public abstract class RemoteBrowserProvider implements BrowserProvider {
 	 * @param viewPort Dimensions of the browser
 	 * @param capabilites Desired capabilities specific to the selenium grid provider 
 	 */
-	protected RemoteBrowserProvider(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
+	protected void setDetails(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
 		this.remoteType = remoteType;
 		this.browser = browser;
 		this.viewPort = viewPort;
 		this.capabilites = capabilites;
 	}
-	
+
 	@Override
 	public String getBrowser() {
 		return browser;
@@ -242,12 +248,5 @@ public abstract class RemoteBrowserProvider implements BrowserProvider {
 		}
 
 		return obj1.equals(obj2);
-	}
-
-	/**
-	 * Type of system remote browser is running on.
-	 */
-	public enum RemoteType {
-		DESKTOP, DEVICE
 	}
 }

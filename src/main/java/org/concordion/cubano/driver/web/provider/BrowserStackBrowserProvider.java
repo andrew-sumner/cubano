@@ -16,13 +16,69 @@ import com.google.gson.JsonElement;
  * <p>Browser and device options: https://www.browserstack.com/automate/java</p> 
  */
 public class BrowserStackBrowserProvider extends RemoteBrowserProvider {	
-	private BrowserStackBrowserProvider(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
-		super(remoteType, browser, viewPort, capabilites);
-	}
-	
 	private static final String REMOTE_URL = "http://[USER_NAME]:[API_KEY]@hub.browserstack.com/wd/hub";
 	private static final String TYPE = "application/json";
 
+	/**
+	 * Constructor. Uses configuration for browser specified in the configuration file.
+	 */	
+	public BrowserStackBrowserProvider() {		
+		String browser = Config.getBrowser();
+		
+		if (browser == null) {
+			browser = "";
+		}
+		
+		// check desktop browsers
+		String[] browserDetails = browser.split(" ");
+		
+		if (browserDetails.length <= 2) {
+			String version = "";
+			
+			if (browserDetails.length == 2) {
+				version = browserDetails[1];
+			}
+		
+			switch (browserDetails[0]) {
+				case "chrome":
+					chrome(version);
+					break;
+					
+				case "internetExplorer":
+				case "ie":
+					internetExplorer(version);
+					break;
+			        
+				case "firefox":
+					firefox(version);
+					break;
+					
+				case "safari":
+					safari(version);
+					break;
+					
+				default:
+					break;
+			}
+		}
+		 
+		// check devices
+		switch (browser) {
+			case "iphone 6s plus":
+				iPhone6SPlusEmulator();
+				break;
+				
+			case "google nexus 5":
+				googleNexus5Emulator();
+				break;
+				
+			default:
+				break;
+		}
+		
+		throw new RuntimeException("Browser '" + browser + "' is not currently supported");
+	}
+	
 	@Override
 	protected String getRemoteDriverUrl() {
 		return REMOTE_URL.replace("[USER_NAME]", Config.getRemoteUserName()).replace("[API_KEY]", Config.getRemoteApiKey());
@@ -54,78 +110,32 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	}
 	
 	/**
-	 * @return Browser configuration for browser specified in the configuration file.
+	 * Set remote browser details
+	 * @param capabilites
+	 * @param browserVersion
 	 */
-	public static BrowserProvider getBrowserConfiguration() {
-		String browser = Config.getBrowser();
-		if (browser == null) {
-			browser = "";
-		}
-		
-		// check desktop browsers
-		String[] browserDetails = browser.split(" ");
-		
-		if (browserDetails.length == 2) {
-			switch (browserDetails[0]) {
-				case "chrome":
-					// eg 46.0
-					return BrowserStackBrowserProvider.chrome(browserDetails[1]);
-					
-				case "internetExplorer":
-				case "ie":
-					// eg 11.0
-					return internetExplorer(browserDetails[1]);
-			        
-				case "firefox":
-					// eg 43.0
-					return firefox(browserDetails[1]); 
-					
-				case "safari":
-					// eg 9.0
-					return safari(browserDetails[1]); 
-					
-				default:
-					break;
-			}
-		}
-		 
-		// check devices
-		switch (browser) {
-			case "iphone 6s plus":
-				return iPhone6SPlusEmulator();
-				
-			case "google nexus 5":
-				return googleNexus5Emulator();
-				
-			default:
-				break;
-		}
-		
-		throw new RuntimeException("Browser '" + browser + "' is not currently supported");
-	}
-	
-	private static BrowserStackBrowserProvider desktop(DesiredCapabilities caps, String browserVersion) {
+	protected void desktop(DesiredCapabilities caps, String browserVersion) {
 		String browserName = caps.getCapability("browser").toString();
 		
 		caps.setCapability("browser_version", browserVersion);
 		caps.setCapability("resolution", DEFAULT_DESKTOP_SCREENSIZE);
 		
-		return new BrowserStackBrowserProvider(RemoteType.DESKTOP, browserName, DEFAULT_DESKTOP_VIEWPORT, caps);
+		this.setDetails(RemoteType.DESKTOP, browserName, DEFAULT_DESKTOP_VIEWPORT, caps);
 	}
-	
+
 	/**
 	 * FireFox browser.
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStackBrowserProvider firefox(String browserVersion) {
+	protected void firefox(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browser", "Firefox");
 		caps.setCapability("os", "Windows");
 		caps.setCapability("os_version", "10");
 				
-		return desktop(caps, browserVersion);
+		this.desktop(caps, browserVersion);
 	}
 	
 	/**
@@ -133,14 +143,14 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStackBrowserProvider chrome(String browserVersion) {
+	protected void chrome(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 
 		caps.setCapability("browser", "Chrome");
 		caps.setCapability("os", "Windows");
 		caps.setCapability("os_version", "10");	
 		
-		return desktop(caps, browserVersion);
+		this.desktop(caps, browserVersion);
 	}
 	
 	/**
@@ -148,14 +158,14 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStackBrowserProvider internetExplorer(String browserVersion) {
+	protected void internetExplorer(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browser", "IE");
 		caps.setCapability("os", "Windows");
 		caps.setCapability("os_version", "10");		
 		
-		return desktop(caps, browserVersion);
+		this.desktop(caps, browserVersion);
 	}
 	
 	/**
@@ -163,52 +173,52 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStackBrowserProvider safari(String browserVersion) {
+	protected void safari(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 
 		caps.setCapability("browser", "Safari");
 		caps.setCapability("os", "OS X");
 		caps.setCapability("os_version", "El Capitan");
 		
-		return desktop(caps, browserVersion);
+		this.desktop(caps, browserVersion);
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static BrowserStackBrowserProvider samsungGalaxyS5Emulator() {
+	protected void samsungGalaxyS5Emulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browserName", "android");
 		caps.setCapability("platform", "ANDROID");
 		caps.setCapability("device", "Samsung Galaxy S5");
 		
-		return new BrowserStackBrowserProvider(RemoteType.DEVICE, "Samsung Galaxy S5", "1080x1920", caps);
+		this.setDetails(RemoteType.DEVICE, "Samsung Galaxy S5", "1080x1920", caps);
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static BrowserStackBrowserProvider iPhone6SPlusEmulator() {
+	protected void iPhone6SPlusEmulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browserName", "iPhone");
 		caps.setCapability("platform", "MAC");
 		caps.setCapability("device", "iPhone 6S Plus");
 		
-		return new BrowserStackBrowserProvider(RemoteType.DEVICE, "iPhone 6S Plus", "?x?", caps);
+		this.setDetails(RemoteType.DEVICE, "iPhone 6S Plus", "?x?", caps);
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static BrowserStackBrowserProvider googleNexus5Emulator() {
+	protected void googleNexus5Emulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 
 		caps.setCapability("browserName", "android");
 		caps.setCapability("platform", "ANDROID");
 		caps.setCapability("device", "Google Nexus 5");
 		
-		return new BrowserStackBrowserProvider(RemoteType.DEVICE, "Google Nexus 5", "1080x1920", caps);
+		this.setDetails(RemoteType.DEVICE, "Google Nexus 5", "1080x1920", caps);
 	}
 }
