@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 ext {
     githubUrl = ''
     issuesUrl = ''
-    vcsUrl =  
+    vcsUrl = ''
 }
 
 //task publishSnapshot(dependsOn: ['test', 'publishMainPublicationToMavenRepository'])
