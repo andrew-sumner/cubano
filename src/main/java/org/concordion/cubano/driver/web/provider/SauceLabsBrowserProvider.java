@@ -144,7 +144,6 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * FireFox browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void firefox(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.firefox();
@@ -156,7 +155,6 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * Chrome browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void chrome(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.chrome();
@@ -168,7 +166,6 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * Internet Explorer browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void internetExplorer(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
@@ -180,7 +177,6 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * Safari browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void safari(String browserVersion) {
 		DesiredCapabilities caps = DesiredCapabilities.safari();
@@ -190,7 +186,7 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	}
 		
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device.
 	 */
 	protected void googleNexus7CEmulator() {
 		DesiredCapabilities caps = DesiredCapabilities.android();
@@ -202,7 +198,7 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	}
 
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device.
 	 */
 	protected void samsungGalaxyS4Emulator() {
 		DesiredCapabilities caps = DesiredCapabilities.android();
@@ -214,7 +210,7 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	}
 	
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device.
 	 */
 	protected void samsungGalaxyS5() {
 		DesiredCapabilities caps = new DesiredCapabilities();
@@ -229,7 +225,7 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	}
 	
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device.
 	 */
 	protected void iPhone6PlusEmulator() {
 		DesiredCapabilities caps = DesiredCapabilities.iphone();
@@ -243,7 +239,7 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
 	}
 	
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device.
 	 */
 	protected void iPhone6() {
 		DesiredCapabilities caps = new DesiredCapabilities();

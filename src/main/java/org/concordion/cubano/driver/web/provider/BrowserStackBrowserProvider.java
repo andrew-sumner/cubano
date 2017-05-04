@@ -111,7 +111,7 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	
 	/**
 	 * Set remote browser details
-	 * @param capabilites
+	 * @param caps
 	 * @param browserVersion
 	 */
 	protected void desktop(DesiredCapabilities caps, String browserVersion) {
@@ -126,7 +126,6 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * FireFox browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void firefox(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
@@ -141,7 +140,6 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * Chrome browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void chrome(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
@@ -156,7 +154,6 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * Internet Explorer browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void internetExplorer(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
@@ -171,7 +168,6 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	/**
 	 * Safari browser.
 	 * @param browserVersion Version of the browser
-	 * @return Configuration required to start this browser on BrowserStack.
 	 */
 	protected void safari(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
@@ -184,7 +180,7 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	}
 	
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device on BrowserStack.
 	 */
 	protected void samsungGalaxyS5Emulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
@@ -197,7 +193,7 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	}
 	
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device on BrowserStack.
 	 */
 	protected void iPhone6SPlusEmulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
@@ -210,7 +206,7 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
 	}
 	
 	/**
-	 * @return Configuration required to start this device on BrowserStack.
+	 * Configuration required to start this device on BrowserStack.
 	 */
 	protected void googleNexus5Emulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
