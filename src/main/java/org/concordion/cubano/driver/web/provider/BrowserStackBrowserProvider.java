@@ -1,11 +1,9 @@
-package org.concordion.cubano.driver.web.grid;
+package org.concordion.cubano.driver.web.provider;
 
 import java.io.IOException;
 
 import org.concordion.cubano.driver.http.HttpEasy;
 import org.concordion.cubano.driver.http.JsonReader;
-import org.concordion.cubano.driver.web.BrowserConfiguration;
-import org.concordion.cubano.driver.web.RemoteConfiguration;
 import org.concordion.cubano.utils.Config;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
@@ -17,8 +15,8 @@ import com.google.gson.JsonElement;
  * 
  * <p>Browser and device options: https://www.browserstack.com/automate/java</p> 
  */
-public class BrowserStack extends RemoteConfiguration {	
-	private BrowserStack(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
+public class BrowserStackBrowserProvider extends RemoteBrowserProvider {	
+	private BrowserStackBrowserProvider(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
 		super(remoteType, browser, viewPort, capabilites);
 	}
 	
@@ -58,7 +56,7 @@ public class BrowserStack extends RemoteConfiguration {
 	/**
 	 * @return Browser configuration for browser specified in the configuration file.
 	 */
-	public static BrowserConfiguration getBrowserConfiguration() {
+	public static BrowserProvider getBrowserConfiguration() {
 		String browser = Config.getBrowser();
 		if (browser == null) {
 			browser = "";
@@ -71,7 +69,7 @@ public class BrowserStack extends RemoteConfiguration {
 			switch (browserDetails[0]) {
 				case "chrome":
 					// eg 46.0
-					return BrowserStack.chrome(browserDetails[1]);
+					return BrowserStackBrowserProvider.chrome(browserDetails[1]);
 					
 				case "internetExplorer":
 				case "ie":
@@ -106,13 +104,13 @@ public class BrowserStack extends RemoteConfiguration {
 		throw new RuntimeException("Browser '" + browser + "' is not currently supported");
 	}
 	
-	private static BrowserStack desktop(DesiredCapabilities caps, String browserVersion) {
+	private static BrowserStackBrowserProvider desktop(DesiredCapabilities caps, String browserVersion) {
 		String browserName = caps.getCapability("browser").toString();
 		
 		caps.setCapability("browser_version", browserVersion);
 		caps.setCapability("resolution", DEFAULT_DESKTOP_SCREENSIZE);
 		
-		return new BrowserStack(RemoteType.DESKTOP, browserName, DEFAULT_DESKTOP_VIEWPORT, caps);
+		return new BrowserStackBrowserProvider(RemoteType.DESKTOP, browserName, DEFAULT_DESKTOP_VIEWPORT, caps);
 	}
 	
 	/**
@@ -120,7 +118,7 @@ public class BrowserStack extends RemoteConfiguration {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStack firefox(String browserVersion) {
+	public static BrowserStackBrowserProvider firefox(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browser", "Firefox");
@@ -135,7 +133,7 @@ public class BrowserStack extends RemoteConfiguration {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStack chrome(String browserVersion) {
+	public static BrowserStackBrowserProvider chrome(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 
 		caps.setCapability("browser", "Chrome");
@@ -150,7 +148,7 @@ public class BrowserStack extends RemoteConfiguration {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStack internetExplorer(String browserVersion) {
+	public static BrowserStackBrowserProvider internetExplorer(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browser", "IE");
@@ -165,7 +163,7 @@ public class BrowserStack extends RemoteConfiguration {
 	 * @param browserVersion Version of the browser
 	 * @return Configuration required to start this browser on BrowserStack.
 	 */
-	public static BrowserStack safari(String browserVersion) {
+	public static BrowserStackBrowserProvider safari(String browserVersion) {
 		DesiredCapabilities caps = new DesiredCapabilities();
 
 		caps.setCapability("browser", "Safari");
@@ -178,39 +176,39 @@ public class BrowserStack extends RemoteConfiguration {
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static BrowserStack samsungGalaxyS5Emulator() {
+	public static BrowserStackBrowserProvider samsungGalaxyS5Emulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browserName", "android");
 		caps.setCapability("platform", "ANDROID");
 		caps.setCapability("device", "Samsung Galaxy S5");
 		
-		return new BrowserStack(RemoteType.DEVICE, "Samsung Galaxy S5", "1080x1920", caps);
+		return new BrowserStackBrowserProvider(RemoteType.DEVICE, "Samsung Galaxy S5", "1080x1920", caps);
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static BrowserStack iPhone6SPlusEmulator() {
+	public static BrowserStackBrowserProvider iPhone6SPlusEmulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		
 		caps.setCapability("browserName", "iPhone");
 		caps.setCapability("platform", "MAC");
 		caps.setCapability("device", "iPhone 6S Plus");
 		
-		return new BrowserStack(RemoteType.DEVICE, "iPhone 6S Plus", "?x?", caps);
+		return new BrowserStackBrowserProvider(RemoteType.DEVICE, "iPhone 6S Plus", "?x?", caps);
 	}
 	
 	/**
 	 * @return Configuration required to start this device on BrowserStack.
 	 */
-	public static BrowserStack googleNexus5Emulator() {
+	public static BrowserStackBrowserProvider googleNexus5Emulator() {
 		DesiredCapabilities caps = new DesiredCapabilities();
 
 		caps.setCapability("browserName", "android");
 		caps.setCapability("platform", "ANDROID");
 		caps.setCapability("device", "Google Nexus 5");
 		
-		return new BrowserStack(RemoteType.DEVICE, "Google Nexus 5", "1080x1920", caps);
+		return new BrowserStackBrowserProvider(RemoteType.DEVICE, "Google Nexus 5", "1080x1920", caps);
 	}
 }

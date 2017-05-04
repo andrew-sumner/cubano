@@ -23,7 +23,8 @@ public class Config {
 	private static String environment = null;
 	
     // Browser 
-	private static String browserName;
+	private static String browserProvider;
+	private static String browserType;
 	private static String browserSize;
 	private static int browserDefaultTimeout;
     
@@ -88,17 +89,18 @@ public class Config {
 		}
 
 		// Browser
-		browserName = System.getProperty("browser");
-		if (browserName == null) {
-			browserName = getProperty("webdriver.browser");
+		browserProvider = getOptionalProperty("webdriver.browserprovider", "org.concordion.cubano.driver.web.LocalConfiguration");
+		browserType = System.getProperty("browser");
+		if (browserType == null) {
+			browserType = getProperty("webdriver.browser");
 		}
     	
 		browserDefaultTimeout = Integer.parseInt(getProperty("webdriver.defaultTimeout"));
 		browserSize = getOptionalProperty("webdriver.browserSize");
 		
 		if (useLocalBrowser()) {
-			localBrowserExe = getOptionalProperty("webdriver." + browserName + ".exe");
-			activatePlugins = Boolean.valueOf(getOptionalProperty("webdriver." + browserName + ".activatePlugins"));
+			localBrowserExe = getOptionalProperty("webdriver." + browserType + ".exe");
+			activatePlugins = Boolean.valueOf(getOptionalProperty("webdriver." + browserType + ".activatePlugins"));
 		}
 		
 		remoteUserName = getOptionalProperty("remotewebdriver.userName");
@@ -213,11 +215,15 @@ public class Config {
 
 	// Browser
 	private static boolean useLocalBrowser() {
-		return !browserName.contains(" ");
+		return !browserType.contains(" ");
 	}
 
 	public static String getBrowser() {
-		return browserName;
+		return browserType;
+	}
+	
+	public static String getBrowserProvider() {
+		return browserProvider;
 	}
 
 	/**

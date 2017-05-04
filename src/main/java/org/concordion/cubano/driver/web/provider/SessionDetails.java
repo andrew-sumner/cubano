@@ -1,4 +1,4 @@
-package org.concordion.cubano.driver.web.grid;
+package org.concordion.cubano.driver.web.provider;
 
 /**
  * Provide a few session details from a remote browser session (ie Selenium Grid).

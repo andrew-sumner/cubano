@@ -1,9 +1,9 @@
-package org.concordion.cubano.driver.web;
+package org.concordion.cubano.driver.web.provider;
 
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.concordion.cubano.driver.web.RemoteConfiguration.RemoteType;
+import org.concordion.cubano.driver.web.provider.RemoteBrowserProvider.RemoteType;
 import org.concordion.cubano.utils.Config;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -34,12 +34,15 @@ import io.github.bonigarcia.wdm.PhantomJsDriverManager;
  *  
  * @author Andrew Sumner
  */
-public class LocalConfiguration implements BrowserConfiguration {
+public class LocalBrowserProvider implements BrowserProvider {
 	private String browser;
 	private String browserSize;
 	private boolean maximised;
 	
-	private LocalConfiguration () {
+	public LocalBrowserProvider () {
+		browser = Config.getBrowser();
+		browserSize = Config.getBrowserSize();
+		maximised = true;
 	}
 
     /** @return A new Selenium WebDriver based on supplied configuration */
@@ -176,8 +179,6 @@ public class LocalConfiguration implements BrowserConfiguration {
 		return new InternetExplorerDriver(capabilities);
 	}
 
-	
-
 	private WebDriver createOperaDriver() {
 		OperaDriverManager.getInstance().setup();
 		
@@ -271,56 +272,7 @@ public class LocalConfiguration implements BrowserConfiguration {
 	public String getBrowser() {
 		return browser;
 	}
-	
-	/**
-	 * Browser selected in configuration file is supported by this class.
-	 * 
-	 * @return true or false
-	 */
-	public static boolean configuredBrowserIsLocal() {
-		switch (Config.getBrowser().toLowerCase()) {
-			case "chrome":
-			case "ie":
-			case "internetexplorer":
-			case "firefox":
-			case "edge":
-			case "opera":
-			case "phantomjs":
-				return true;
-	            
-			default:
-				return false;
-		}
-	}
 
-	/**
-	 * @return The browser selected in the configuration file.
-	 */
-	public static LocalConfiguration getBrowserConfiguration() {
-		LocalConfiguration config = new LocalConfiguration();
-
-		config.browser = Config.getBrowser();
-		config.browserSize = Config.getBrowserSize();
-		config.maximised = true;
-
-		return config;
-	}
-
-	/**
-	 * FireFox browser.
-	 * @param browserSize Dimensions to set browser to in format WxH
-	 * @return FireFox configuration.
-	 */
-	public static LocalConfiguration firefox(String browserSize) {
-		LocalConfiguration config = new LocalConfiguration();
-		
-		config.browser = "Firefox";
-		config.browserSize = browserSize;
-		config.maximised = false;
-		
-		return config;
-	}
-	
 	/**
 	 * Helper for finding Browser plug-ins stored in the libs folder..
 	 */

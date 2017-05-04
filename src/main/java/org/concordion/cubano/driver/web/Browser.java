@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.concordion.cubano.driver.web.grid.BrowserStack;
-import org.concordion.cubano.driver.web.grid.SessionDetails;
 import org.concordion.cubano.driver.web.pagefactory.PageObjectAwareHtmlElementsLoader;
+import org.concordion.cubano.driver.web.provider.BrowserProvider;
+import org.concordion.cubano.driver.web.provider.BrowserStackBrowserProvider;
+import org.concordion.cubano.driver.web.provider.RemoteBrowserProvider;
+import org.concordion.cubano.driver.web.provider.SessionDetails;
 import org.concordion.cubano.utils.Config;
 import org.concordion.slf4j.ext.ReportLoggerFactory;
 import org.openqa.selenium.WebDriver;
@@ -30,7 +32,7 @@ public class Browser {
 	private SeleniumEventLogger eventListener;
 	private boolean isRemoteDriver;
 	private SessionId sessionId = null;
-	private BrowserConfiguration browserConfig;
+	private BrowserProvider browserConfig;
 
 	/**
 	 * Constructor - does not start the browser.
@@ -49,7 +51,7 @@ public class Browser {
 		}
 
 		try {
-			return ((RemoteConfiguration) browserConfig).getSessionDetails(sessionId);
+			return ((RemoteBrowserProvider) browserConfig).getSessionDetails(sessionId);
 		} catch (IOException e) {
 			throw new RuntimeException("Error while getting session details from selenium grid provider", e);
 		}
@@ -62,7 +64,7 @@ public class Browser {
 	 *         locally
 	 */
 	public boolean isRemoteDriver() {
-		return this.browserConfig instanceof RemoteConfiguration;
+		return this.browserConfig instanceof RemoteBrowserProvider;
 	}
 
 	/**
@@ -145,14 +147,14 @@ public class Browser {
 	 *            Browser definition
 	 * @return WebDriver
 	 */
-	public WebDriver open(BrowserConfiguration config) {
+	public WebDriver open(BrowserProvider config) {
 		if (this.eventFiringDriver != null) {
 			throw new RuntimeException("Browser is already open");
 		}
 
 		LOGGER.debug("Starting browser");
 
-		this.isRemoteDriver = config instanceof RemoteConfiguration;
+		this.isRemoteDriver = config instanceof RemoteBrowserProvider;
 		this.browserConfig = config;
 
 		this.wrappedDriver = config.createDriver();
@@ -194,68 +196,8 @@ public class Browser {
 	/**
 	 * @return The current browser configuration
 	 */
-	public BrowserConfiguration getConfiguration() {
+	public BrowserProvider getConfiguration() {
 		return this.browserConfig;
-	}
-
-	private static boolean runOnSingleBrowser() {
-		String browserFilter = Config.getBrowser();
-
-		if (browserFilter == null) {
-			return false;
-		}
-		if (browserFilter.isEmpty()) {
-			return false;
-		}
-		if (browserFilter.equals("*")) {
-			return false;
-		}
-		if (browserFilter.equalsIgnoreCase("All Browsers/Devices")) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Provide a collection of browser configurations for cross browser testing.
-	 * 
-	 * TODO This doesn't belong in the framework
-	 * 
-	 * @return Collection of browser configurations
-	 */
-	public static Collection<BrowserConfiguration> getConfiguredBrowsers() {
-		Collection<BrowserConfiguration> env = new ArrayList<BrowserConfiguration>();
-
-		if (runOnSingleBrowser()) {
-			env.add(getConfiguredBrowser());
-		} else {
-			env.add(LocalConfiguration.firefox("950x600"));
-			env.add(LocalConfiguration.firefox("450x600"));
-
-			// Desktop
-			// env.add(BrowserStack.firefox("43.0"));
-			// env.add(BrowserStack.internetExplorer("11.0"));
-			// env.add(BrowserStack.chrome("46.0"));
-			// env.add(BrowserStack.safari("9.0"));
-
-			// env.add(BrowserStack.edge("?")); // Edge browser does not
-			// currently support enough WebDriver features to work. Try again in
-			// a few months
-
-			// Tablet
-			// env.add(BrowserStack.samsungGalaxyS5Emulator()); // Runs fine but
-			// ApplitTools stitching is extremely bad
-			// env.add(BrowserStack.googleNexus5Emulator()); // Browser wouldn't
-			// start
-
-			// Phone
-			// env.add(BrowserStack.iPhone6SPlusEmulator()); // Runs but
-			// AppliTools stitching header and side by side issue
-
-		}
-
-		return env;
 	}
 
 	/**
@@ -264,12 +206,13 @@ public class Browser {
 	 * 
 	 * @return Browser configuration
 	 */
-	public static BrowserConfiguration getConfiguredBrowser() {
-		if (LocalConfiguration.configuredBrowserIsLocal()) {
-			return LocalConfiguration.getBrowserConfiguration();
-		} else {
-			return BrowserStack.getBrowserConfiguration();
+	public static BrowserProvider getConfiguredBrowser() {
+		try {
+			return (BrowserProvider) Class.forName(Config.getBrowserProvider()).newInstance();
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			throw new RuntimeException("Unable to create class " + Config.getBrowserProvider(), e);
 		}
+		
 	}
 
 	/**

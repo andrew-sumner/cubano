@@ -1,4 +1,4 @@
-package org.concordion.cubano.driver.web;
+package org.concordion.cubano.driver.web.provider;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -16,7 +16,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.concordion.cubano.driver.web.grid.SessionDetails;
+import org.concordion.cubano.driver.web.RemoteHttpClientFactory;
 import org.concordion.cubano.utils.Config;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CommandInfo;
@@ -29,12 +29,12 @@ import org.openqa.selenium.remote.http.HttpClient.Factory;
 /**
  * Provides everything required to start up a remote browser (desktop or device) - apart from the where to connect.
  * 
- * Extend this to provide access to your Selenium grid provider, the framework provides implementations for {@link org.concordion.cubano.driver.web.grid.BrowserStack BrowserStack} 
- * and {@link org.concordion.cubano.driver.web.grid.SauceLabs SauceLabs} 
+ * Extend this to provide access to your Selenium grid provider, the framework provides implementations for {@link org.concordion.cubano.driver.web.provider.BrowserStackBrowserProvider BrowserStack} 
+ * and {@link org.concordion.cubano.driver.web.provider.SauceLabsBrowserProvider SauceLabs} 
  *  
  * @author Andrew Sumner
  */
-public abstract class RemoteConfiguration implements BrowserConfiguration {
+public abstract class RemoteBrowserProvider implements BrowserProvider {
 	protected static final String DEFAULT_DESKTOP_SCREENSIZE = "1024x768";
 	protected static final String DEFAULT_DESKTOP_VIEWPORT = "950x600";
 	
@@ -63,7 +63,7 @@ public abstract class RemoteConfiguration implements BrowserConfiguration {
 	 * @param viewPort Dimensions of the browser
 	 * @param capabilites Desired capabilities specific to the selenium grid provider 
 	 */
-	protected RemoteConfiguration(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
+	protected RemoteBrowserProvider(RemoteType remoteType, String browser, String viewPort, DesiredCapabilities capabilites) {
 		this.remoteType = remoteType;
 		this.browser = browser;
 		this.viewPort = viewPort;
@@ -162,7 +162,7 @@ public abstract class RemoteConfiguration implements BrowserConfiguration {
 	 * @param obj The object to compare
 	 * @return true if this object is the same as the obj argument; false otherwise
 	 */
-	public boolean equals(BrowserConfiguration obj) {
+	public boolean equals(BrowserProvider obj) {
 		if (this == obj) { 
 			return true; 
 		}
@@ -173,7 +173,7 @@ public abstract class RemoteConfiguration implements BrowserConfiguration {
 			return false; 
 		}
 		
-		RemoteConfiguration compare = (RemoteConfiguration)obj;
+		RemoteBrowserProvider compare = (RemoteBrowserProvider)obj;
 
 		if (!areEqual(this.getCapabilites(), compare.getCapabilites())) { 
 			return false; 
