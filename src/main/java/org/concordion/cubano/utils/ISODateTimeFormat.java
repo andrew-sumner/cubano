@@ -10,7 +10,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
  * Convert from/to ISO8601 formated dates such as '2016-04-28T00:02:40Z'.
  * <p>
@@ -208,8 +207,4 @@ public class ISODateTimeFormat {
     public static String fromXMLGregorianCalendarToString(XMLGregorianCalendar xcal) {
         return xcal.toXMLFormat();
     }
-
-    // To run these tests must comment out private constructor and add:
-    // import org.junit.Test;
-    // import static org.junit.Assert.*;
 }
