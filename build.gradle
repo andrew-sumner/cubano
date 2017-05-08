@@ -112,7 +112,7 @@ dependencies {
 }
 
 checkstyle {
-    toolVersion = '6.19'
+    // toolVersion = '6.19'
     ignoreFailures = true
 
     // Using default location /config/checkstyle/checkstyle.xml
