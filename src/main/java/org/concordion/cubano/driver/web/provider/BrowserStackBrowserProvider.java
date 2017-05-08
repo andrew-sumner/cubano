@@ -110,10 +110,10 @@ public class BrowserStackBrowserProvider extends RemoteBrowserProvider {
     }
 
     /**
-     * Set remote browser details
+     * Set remote browser details.
      *
-     * @param caps
-     * @param browserVersion
+     * @param caps Desired capabilities
+     * @param browserVersion Browser version
      */
     protected void desktop(DesiredCapabilities caps, String browserVersion) {
         String browserName = caps.getCapability("browser").toString();

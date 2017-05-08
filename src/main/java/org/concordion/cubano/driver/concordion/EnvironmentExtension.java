@@ -20,7 +20,7 @@ import org.concordion.api.listener.SpecificationProcessingListener;
  * <pre>
  * &#64;Extension
  * private final EnvironmentExtension footer = new EnvironmentExtension()
- * 		.withRerunTest("MyMSD-RunSelectedTest")
+ *      .withRerunTest("MyMSD-RunSelectedTest")
  *      .withRerunParameter("token", "ALLOW")
  *      .withRerunParameter("TEST_CLASSNAME", this.getClass().getName().replace(ConcordionBase.class.getPackage().getName() + ".", ""))
  *      .withEnvironment(AppConfig.getEnvironment().toUpperCase())

@@ -29,8 +29,9 @@ import org.openqa.selenium.remote.http.HttpClient.Factory;
 /**
  * Provides everything required to start up a remote browser (desktop or device) - apart from the where to connect.
  * <p>
- * Extend this to provide access to your Selenium grid provider, the framework provides implementations for {@link org.concordion.cubano.driver.web.provider.BrowserStackBrowserProvider BrowserStack}
- * and {@link org.concordion.cubano.driver.web.provider.SauceLabsBrowserProvider SauceLabs}
+ * Extend this to provide access to your Selenium grid provider, the framework provides implementations
+ * for {@link org.concordion.cubano.driver.web.provider.BrowserStackBrowserProvider BrowserStack}
+ * and {@link org.concordion.cubano.driver.web.provider.SauceLabsBrowserProvider SauceLabs}.
  *
  * @author Andrew Sumner
  */
@@ -44,7 +45,7 @@ public abstract class RemoteBrowserProvider implements BrowserProvider {
     private DesiredCapabilities capabilites;
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     protected RemoteBrowserProvider() {
     }

@@ -212,75 +212,75 @@ public class ISODateTimeFormat {
     // To run these tests must comment out private constructor and add:
     // import org.junit.Test;
     // import static org.junit.Assert.*;
-    /*
-	@Test
-	public void test() throws ParseException {
-		LocalDateTime date;
+/*
+    @Test
+    public void test() throws ParseException {
+        LocalDateTime date;
 
-		// Custom
-		date = ISODateTimeFormat.parse("2016-07-01T02:09:18.76Z");
-		assertEquals("ISO8601 Local Date", "2016-07-01T02:09:18.760Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
-		
-		date = ISODateTimeFormat.parse("2016-07-01T02:09:18.7Z");
-		assertEquals("ISO8601 Local Date", "2016-07-01T02:09:18.700Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
+        // Custom
+        date = ISODateTimeFormat.parse("2016-07-01T02:09:18.76Z");
+        assertEquals("ISO8601 Local Date", "2016-07-01T02:09:18.760Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
 
-		date = ISODateTimeFormat.parse("2016-07-01T02:09:00.76Z");
-		assertEquals("ISO8601 Local Date", "2016-07-01T02:09:00.760Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
+        date = ISODateTimeFormat.parse("2016-07-01T02:09:18.7Z");
+        assertEquals("ISO8601 Local Date", "2016-07-01T02:09:18.700Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
 
-		date = ISODateTimeFormat.parse("2016-07-01T02:09:00Z");
-		assertEquals("ISO8601 Local Date", "2016-07-01T02:09:00.000Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
+        date = ISODateTimeFormat.parse("2016-07-01T02:09:00.76Z");
+        assertEquals("ISO8601 Local Date", "2016-07-01T02:09:00.760Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
 
-		// Zero Minutes/Seconds
-		date = ISODateTimeFormat.parse("2016-04-26T15:00:00");
-		assertEquals("ISO8601 Local Date", "2016-04-26T15:00", ISODateTimeFormat.formatAsLocalDateTimeString(date));
-		assertEquals("ISO8601 UTC TimeZone", "2016-04-26T03:00Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
-		assertEquals("ISO8601 Local Date", "2016-04-26T15:00:00", ISODateTimeFormat.formatAsLocalDateTime(date));
-		assertEquals("ISO8601 UTC TimeZone", "2016-04-26T03:00:00Z", ISODateTimeFormat.formatAsUTCDateTime(date));
+        date = ISODateTimeFormat.parse("2016-07-01T02:09:00Z");
+        assertEquals("ISO8601 Local Date", "2016-07-01T02:09:00.000Z", ISODateTimeFormat.formatAsUTCDateTimeBPM(date));
 
-		// Non Zero Minutes/Seconds
-		date = ISODateTimeFormat.parse("2016-04-26T15:16:55");
-		assertEquals("Local Date", "2016-04-26T15:16:55", date.toString());
-		assertEquals("ISO8601 Local Date", "2016-04-26T15:16:55", ISODateTimeFormat.formatAsLocalDateTimeString(date));
-		assertEquals("ISO8601 UTC TimeZone", "2016-04-26T03:16:55Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
-		assertEquals("ISO8601 Default TimeZone", "2016-04-26T15:16:55+12:00[" + ZoneId.systemDefault().getId() + "]", ISODateTimeFormat.format(date, ZoneId.systemDefault()));
+        // Zero Minutes/Seconds
+        date = ISODateTimeFormat.parse("2016-04-26T15:00:00");
+        assertEquals("ISO8601 Local Date", "2016-04-26T15:00", ISODateTimeFormat.formatAsLocalDateTimeString(date));
+        assertEquals("ISO8601 UTC TimeZone", "2016-04-26T03:00Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
+        assertEquals("ISO8601 Local Date", "2016-04-26T15:00:00", ISODateTimeFormat.formatAsLocalDateTime(date));
+        assertEquals("ISO8601 UTC TimeZone", "2016-04-26T03:00:00Z", ISODateTimeFormat.formatAsUTCDateTime(date));
 
-		// Daylight Savings
-		date = ISODateTimeFormat.parse("2016-03-26T15:16:55");
-		assertEquals("ISO8601 Local Date Daylight Savings", "2016-03-26T15:16:55", ISODateTimeFormat.formatAsLocalDateTimeString(date));
-		assertEquals("ISO8601 Local Date Daylight Savings", "2016-03-26T02:16:55Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
-		assertEquals("ISO8601 Default TimeZone Daylight Savings",
-				"2016-03-26T15:16:55+13:00[" + ZoneId.systemDefault().getId() + "]",
-				ISODateTimeFormat.format(date, ZoneId.systemDefault()));
+        // Non Zero Minutes/Seconds
+        date = ISODateTimeFormat.parse("2016-04-26T15:16:55");
+        assertEquals("Local Date", "2016-04-26T15:16:55", date.toString());
+        assertEquals("ISO8601 Local Date", "2016-04-26T15:16:55", ISODateTimeFormat.formatAsLocalDateTimeString(date));
+        assertEquals("ISO8601 UTC TimeZone", "2016-04-26T03:16:55Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
+        assertEquals("ISO8601 Default TimeZone", "2016-04-26T15:16:55+12:00[" + ZoneId.systemDefault().getId() + "]", ISODateTimeFormat.format(date, ZoneId.systemDefault()));
 
-		date = ISODateTimeFormat.parse("2016-04-26T03:16:55Z");
-		assertEquals("UTC Date", "2016-04-26T15:16:55", date.toString());
-		assertEquals("ISO8601 UTC Date", "2016-04-26T03:16:55Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
+        // Daylight Savings
+        date = ISODateTimeFormat.parse("2016-03-26T15:16:55");
+        assertEquals("ISO8601 Local Date Daylight Savings", "2016-03-26T15:16:55", ISODateTimeFormat.formatAsLocalDateTimeString(date));
+        assertEquals("ISO8601 Local Date Daylight Savings", "2016-03-26T02:16:55Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
+        assertEquals("ISO8601 Default TimeZone Daylight Savings",
+                "2016-03-26T15:16:55+13:00[" + ZoneId.systemDefault().getId() + "]",
+                ISODateTimeFormat.format(date, ZoneId.systemDefault()));
 
-		// Nanoseconds
-		date = ISODateTimeFormat.parse("2016-04-26T03:16:55.189Z");
-		assertEquals("ISO8601 Local NANO", "2016-04-26T15:16:55.189", ISODateTimeFormat.formatAsLocalDateTimeString(date));
+        date = ISODateTimeFormat.parse("2016-04-26T03:16:55Z");
+        assertEquals("UTC Date", "2016-04-26T15:16:55", date.toString());
+        assertEquals("ISO8601 UTC Date", "2016-04-26T03:16:55Z", ISODateTimeFormat.formatAsUTCDateTimeString(date));
 
-		date = ISODateTimeFormat.parse("2016-04-26T03:16:55.1Z");
-		assertEquals("ISO8601 Local NANO", "2016-04-26T15:16:55.100", ISODateTimeFormat.formatAsLocalDateTimeString(date));
+        // Nanoseconds
+        date = ISODateTimeFormat.parse("2016-04-26T03:16:55.189Z");
+        assertEquals("ISO8601 Local NANO", "2016-04-26T15:16:55.189", ISODateTimeFormat.formatAsLocalDateTimeString(date));
 
-		date = ISODateTimeFormat.parse("2016-04-26T03:16:55.100200300Z");
-		assertEquals("ISO8601 Local NANO", "2016-04-26T15:16:55.100200300", ISODateTimeFormat.formatAsLocalDateTimeString(date));
+        date = ISODateTimeFormat.parse("2016-04-26T03:16:55.1Z");
+        assertEquals("ISO8601 Local NANO", "2016-04-26T15:16:55.100", ISODateTimeFormat.formatAsLocalDateTimeString(date));
 
-		// Custom Format
-		date = ISODateTimeFormat.parse("2016-04-26T03:16:55.923Z");
-		assertEquals("Custom Format", "2016-04-26", ISODateTimeFormat.format(date, SHORT_DATE));
-		assertEquals("Custom Format", "26/04/2016 15:16:55", ISODateTimeFormat.format(date, DISPLAY_LONG_DATE));
+        date = ISODateTimeFormat.parse("2016-04-26T03:16:55.100200300Z");
+        assertEquals("ISO8601 Local NANO", "2016-04-26T15:16:55.100200300", ISODateTimeFormat.formatAsLocalDateTimeString(date));
 
-		// XMLGregorianCalendar
-		XMLGregorianCalendar xcal = ISODateTimeFormat.toXMLGregorianCalendar("2016-04-26T03:16:55.923Z");
+        // Custom Format
+        date = ISODateTimeFormat.parse("2016-04-26T03:16:55.923Z");
+        assertEquals("Custom Format", "2016-04-26", ISODateTimeFormat.format(date, SHORT_DATE));
+        assertEquals("Custom Format", "26/04/2016 15:16:55", ISODateTimeFormat.format(date, DISPLAY_LONG_DATE));
 
-		assertEquals("XMLGregorianCalendar", "Tue Apr 26 15:16:55 NZST 2016", xcal.toGregorianCalendar().getTime().toString());
-		assertEquals("XMLGregorianCalendar", "2016-04-26T03:16:55.923Z", xcal.toGregorianCalendar().getTime().toInstant().toString());
+        // XMLGregorianCalendar
+        XMLGregorianCalendar xcal = ISODateTimeFormat.toXMLGregorianCalendar("2016-04-26T03:16:55.923Z");
 
-		assertEquals("XMLGregorianCalendar", "2016-04-26T03:16:55.923Z", ISODateTimeFormat.fromXMLGregorianCalendarToString(xcal));
-		date = ISODateTimeFormat.fromXMLGregorianCalendarToLocalDT(xcal);
+        assertEquals("XMLGregorianCalendar", "Tue Apr 26 15:16:55 NZST 2016", xcal.toGregorianCalendar().getTime().toString());
+        assertEquals("XMLGregorianCalendar", "2016-04-26T03:16:55.923Z", xcal.toGregorianCalendar().getTime().toInstant().toString());
 
-		assertEquals("XMLGregorianCalendar", "2016-04-26T15:16:55.923", ISODateTimeFormat.formatAsLocalDateTime(date));
-	}
-	*/
+        assertEquals("XMLGregorianCalendar", "2016-04-26T03:16:55.923Z", ISODateTimeFormat.fromXMLGregorianCalendarToString(xcal));
+        date = ISODateTimeFormat.fromXMLGregorianCalendarToLocalDT(xcal);
+
+        assertEquals("XMLGregorianCalendar", "2016-04-26T15:16:55.923", ISODateTimeFormat.formatAsLocalDateTime(date));
+    }
+*/
 }

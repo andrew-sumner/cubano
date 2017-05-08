@@ -120,9 +120,9 @@ public class LocalBrowserProvider implements BrowserProvider {
 
     /*
      * For running portable firefox at same time as desktop version:
-     * 		1. Edit FirefoxPortable.ini (next to FirefoxPortable.exe)
-     * 		2. If its not there then copy from "Other/Source" folder
-     * 		3. Change AllowMultipleInstances=false to true
+     *      1. Edit FirefoxPortable.ini (next to FirefoxPortable.exe)
+     *      2. If its not there then copy from "Other/Source" folder
+     *      3. Change AllowMultipleInstances=false to true
      */
     protected WebDriver createFireFoxDriver() {
         FirefoxDriverManager.getInstance().setup();
@@ -133,9 +133,9 @@ public class LocalBrowserProvider implements BrowserProvider {
 
         if (!Config.getBrowserExe().isEmpty()) {
             // TODO Should we do this way?
-//			FirefoxOptions options = new FirefoxOptions();
-//			options.setBinary(Config.getBrowserExe());
-//			capabilities.setCapability(FirefoxDriver.CAPABILITY, options);
+//            FirefoxOptions options = new FirefoxOptions();
+//            options.setBinary(Config.getBrowserExe());
+//            capabilities.setCapability(FirefoxDriver.CAPABILITY, options);
 
             capabilities.setCapability(FirefoxDriver.BINARY, Config.getBrowserExe());
         }

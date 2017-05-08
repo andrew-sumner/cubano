@@ -141,7 +141,7 @@ class GrabUtility {
         String htmlContent = driver.getPageSource();
 
 
-//		String htmlContent = (String)((JavascriptExecutor)driver).executeScript(return document.documentElement.outerHTML;");
+//      String htmlContent = (String)((JavascriptExecutor)driver).executeScript(return document.documentElement.outerHTML;");
 
 
         if (!htmlContent.trim().equals("")) {
@@ -210,12 +210,12 @@ class GrabUtility {
             WebElement frame = null;
             String attribute;
 
-//			try {
-//				driver.switchTo().frame(frame);
-//			} catch (NoSuchElementException e) {
-//				LOGGER.warn(e.getMessage());
-//				continue;
-//			}
+//            try {
+//                driver.switchTo().frame(frame);
+//            } catch (NoSuchElementException e) {
+//                LOGGER.warn(e.getMessage());
+//                continue;
+//            }
 
             attribute = iframe.attr("id");
             if (!attribute.isEmpty()) {
@@ -229,12 +229,12 @@ class GrabUtility {
                 }
             }
 
-//			if (frame == null) {
-//				attribute = iframe.className();
-//				if (!attribute.isEmpty()) {
-//					frame = driver.findElement(By.className(attribute));
-//				}
-//			}
+//            if (frame == null) {
+//                attribute = iframe.className();
+//                if (!attribute.isEmpty()) {
+//                    frame = driver.findElement(By.className(attribute));
+//                }
+//            }
 
             if (frame == null) {
                 attribute = "Index" + String.valueOf(frameIndex);
@@ -404,7 +404,7 @@ class GrabUtility {
             injectJQuery();
             String fileName = getFileName(url);
 
-//			url = url.replace(AppConfig.getBaseUrl(), "");
+//            url = url.replace(AppConfig.getBaseUrl(), "");
 
             StringBuilder sb = new StringBuilder();
 
@@ -427,11 +427,11 @@ class GrabUtility {
             driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
             Object content = ((JavascriptExecutor) driver).executeAsyncScript(sb.toString());
 
-//			Object object = (Object)((JavascriptExecutor)driver).executeScript(sb.toString());
-
-//			if (content instanceof String) {
-//				content += "";
-//			}
+//            Object object = (Object) ((JavascriptExecutor) driver).executeScript(sb.toString());
+//
+//            if (content instanceof String) {
+//                content += "";
+//            }
 
             return writeFile(fileName, (String) content);
 
@@ -479,12 +479,12 @@ class GrabUtility {
     }
 
     private String getJQueryFile() throws IOException {
-//		URL url = GrabUtility.class.getResource("jquery.js");
-//		if (url == null) {
-//			throw new IllegalArgumentException("File not found: " + "jquery.js");
-//		}
-//		
-//		return url;
+//        URL url = GrabUtility.class.getResource("jquery.js");
+//        if (url == null) {
+//            throw new IllegalArgumentException("File not found: " + "jquery.js");
+//        }
+//
+//        return url;
         InputStream input = GrabUtility.class.getResourceAsStream("jquery.js");
         if (input == null) {
             throw new IllegalArgumentException("File not found: " + "jquery.js");
@@ -499,7 +499,7 @@ class GrabUtility {
         }
 
         String jquery = getJQueryFile();
-//		String jquery2 = "file://C:/Java/workspace/test-automation-declarewages/bin/nz/govt/msd/driver/web/pagegrabber/jquery.js";
+//        String jquery2 = "file://C:/Java/workspace/test-automation-declarewages/bin/nz/govt/msd/driver/web/pagegrabber/jquery.js";
 
         String inject = "var s=window.document.createElement('script');" +
                 //"s.src='" + jquery.toString() + "';" +

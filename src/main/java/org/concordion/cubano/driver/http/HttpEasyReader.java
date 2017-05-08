@@ -187,10 +187,10 @@ public class HttpEasyReader {
 
         fileName = new File(fileName).getName();
 
-//		System.out.println("Content-Type = " + connection.getContentType());
-//		System.out.println("Content-Disposition = " + disposition);
-//		System.out.println("Content-Length = " + connection.getContentLength());
-//		System.out.println("fileName = " + fileName);
+//        System.out.println("Content-Type = " + connection.getContentType());
+//        System.out.println("Content-Disposition = " + disposition);
+//        System.out.println("Content-Length = " + connection.getContentLength());
+//        System.out.println("fileName = " + fileName);
 
         File folder = new File(saveDir);
         if (!folder.exists()) {

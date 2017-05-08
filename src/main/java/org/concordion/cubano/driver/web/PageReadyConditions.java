@@ -51,13 +51,13 @@ public class PageReadyConditions {
      * @return True if there are no visible elements with the 'spinner' class name.
      */
     public static final ExpectedCondition<Boolean> noVisibleSpinners() {
-//    	private static final String SCRIPT =  
-//        "$('.Spinner').each(function() {\n" +
-//        "    if ($(this).css('display') != 'none') {\n" +
-//        "    	return false;\n" +
-//        "    }\n" +
-//        "});\n" +
-//        "return true;";
+//      private static final String SCRIPT =
+//                "$('.Spinner').each(function() {\n" +
+//                        "     if ($(this).css('display') != 'none') {\n" +
+//                        "         return false;\n" +
+//                        "     }\n" +
+//                        "});\n" +
+//                        "return true;";
 
         return new ExpectedCondition<Boolean>() {
             @Override

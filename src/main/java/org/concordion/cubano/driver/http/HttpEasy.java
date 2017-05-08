@@ -110,8 +110,8 @@ import com.google.common.net.MediaType;
  * <p>
  * <pre>
  * HttpEasy.withDefaults()
- * 		.allowAllHosts()
- * 		.trustAllCertificates();
+ *      .allowAllHosts()
+ *      .trustAllCertificates();
  * </pre>
  * </p>
  * <p>

@@ -1,12 +1,7 @@
 package org.concordion.cubano.driver.web;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.concordion.cubano.driver.web.pagefactory.PageObjectAwareHtmlElementsLoader;
 import org.concordion.cubano.driver.web.provider.BrowserProvider;
-import org.concordion.cubano.driver.web.provider.BrowserStackBrowserProvider;
 import org.concordion.cubano.driver.web.provider.RemoteBrowserProvider;
 import org.concordion.cubano.driver.web.provider.SessionDetails;
 import org.concordion.cubano.utils.Config;
@@ -17,6 +12,8 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * A wrapper around Selenium WebDriver to make it easier to open and close a

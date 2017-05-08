@@ -229,16 +229,16 @@ public class SeleniumEventLogger implements WebDriverEventListener {
         String changedValue = "";
 
         changedValue = Arrays.toString(keysToSend);
-//		try {
-//			changedValue = element.getText();
+//        try {
+//            changedValue = element.getText();
 //
-//			if (changedValue.isEmpty()) {
-//				changedValue = element.getAttribute("value");
-//			}
-//		} catch (StaleElementReferenceException e) {
-//			changedValue = "[Could not log change of element, because of a stale element reference exception]";
-//			return;
-//		}
+//            if (changedValue.isEmpty()) {
+//                changedValue = element.getAttribute("value");
+//            }
+//        } catch (StaleElementReferenceException e) {
+//            changedValue = "[Could not log change of element, because of a stale element reference exception]";
+//            return;
+//        }
 
         String name = getElementName(element);
 
