@@ -412,7 +412,7 @@ class GrabUtility {
             sb.append("$.ajax({");
             sb.append("    timeout: 3000,");
             sb.append("    type: 'GET',");
-            sb.append("    url: '" + url + "',");
+            sb.append("    url: '").append(url).append("',");
             //sb.append("    dataType: \"text\",");
             sb.append("    success: function(data) {");
             //sb.append("        alert(data);");

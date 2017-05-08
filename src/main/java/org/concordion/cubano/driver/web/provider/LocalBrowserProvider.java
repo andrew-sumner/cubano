@@ -38,6 +38,9 @@ public class LocalBrowserProvider implements BrowserProvider {
     private String browserSize;
     private boolean maximised;
 
+    /**
+     * Reads in configuration from the configuration file.
+     */
     public LocalBrowserProvider() {
         browser = Config.getBrowser();
         browserSize = Config.getBrowserSize();
@@ -92,6 +95,9 @@ public class LocalBrowserProvider implements BrowserProvider {
         return driver;
     }
 
+    /**
+     * @return Starts Chrome driver manager and creates a new WebDriver instance.
+     */
     protected WebDriver createChromeDriver() {
         ChromeDriverManager.getInstance().setup();
 
@@ -108,6 +114,9 @@ public class LocalBrowserProvider implements BrowserProvider {
         return new ChromeDriver(capabilities);
     }
 
+    /**
+     * @return Starts Edge driver manager and creates a new WebDriver instance.
+     */
     protected WebDriver createEdgeDriver() {
         EdgeDriverManager.getInstance().setup();
 
@@ -118,11 +127,13 @@ public class LocalBrowserProvider implements BrowserProvider {
         return new EdgeDriver(capabilities);
     }
 
-    /*
+    /**
      * For running portable firefox at same time as desktop version:
      *      1. Edit FirefoxPortable.ini (next to FirefoxPortable.exe)
      *      2. If its not there then copy from "Other/Source" folder
      *      3. Change AllowMultipleInstances=false to true
+     *
+     * @return Starts FireFox driver manager and creates a new WebDriver instance.
      */
     protected WebDriver createFireFoxDriver() {
         FirefoxDriverManager.getInstance().setup();
@@ -164,6 +175,9 @@ public class LocalBrowserProvider implements BrowserProvider {
         return new FirefoxDriver(capabilities);
     }
 
+    /**
+     * @return Starts Internet Explorer driver manager and creates a new WebDriver instance.
+     */
     protected WebDriver createInternetExplorerDriver() {
         InternetExplorerDriverManager.getInstance().setup();
 
@@ -180,6 +194,9 @@ public class LocalBrowserProvider implements BrowserProvider {
         return new InternetExplorerDriver(capabilities);
     }
 
+    /**
+     * @return Starts Opera driver manager and creates a new WebDriver instance.
+     */
     protected WebDriver createOperaDriver() {
         OperaDriverManager.getInstance().setup();
 
@@ -196,6 +213,9 @@ public class LocalBrowserProvider implements BrowserProvider {
         return new OperaDriver(capabilities);
     }
 
+    /**
+     * @return Starts PhantomJs driver manager and creates a new WebDriver instance.
+     */
     protected WebDriver createPhantomJsDriver() {
         PhantomJsDriverManager.getInstance().setup();
 
@@ -206,6 +226,11 @@ public class LocalBrowserProvider implements BrowserProvider {
         return new PhantomJSDriver(capabilities);
     }
 
+    /**
+     * Add proxy settings to desired capabilities if specified in config file.
+     *
+     * @param capabilities Desired capabilities
+     */
     protected void addProxyCapabilities(DesiredCapabilities capabilities) {
         if (!Config.isProxyRequired()) {
             return;

@@ -224,9 +224,6 @@ public class PageObjectAwareHtmlElementsLoader implements WrapsDriver {
 
     /**
      * Initialises fields of the given HtmlElements object using specified locator factory.
-     *
-     * @param page           Page object to be initialised.
-     * @param locatorFactory Locator factory that will be used to locate elements.
      */
     private static void populatePageObject(Object instance, SearchContext searchContext, BasePageObject<?> parentPageObject) {
         PageFactory.initElements(new PageObjectAwareHtmlElementDecorator(new HtmlElementLocatorFactory(searchContext), parentPageObject), instance);

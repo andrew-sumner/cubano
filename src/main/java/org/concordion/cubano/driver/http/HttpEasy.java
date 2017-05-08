@@ -641,7 +641,7 @@ public class HttpEasy {
         connection.setInstanceFollowRedirects(false);
 
         if (requestMethod.equals("POST") || requestMethod.equals("PUT")) {
-            dataWriter = getDataWriter(dataWriter, url, connection);
+            dataWriter = getDataWriter(url, connection);
 
             connection.setDoOutput(true);
         } else {
@@ -692,7 +692,9 @@ public class HttpEasy {
         }
     }
 
-    private DataWriter getDataWriter(DataWriter dataWriter, URL url, HttpURLConnection connection) throws UnsupportedEncodingException {
+    private DataWriter getDataWriter(URL url, HttpURLConnection connection) throws UnsupportedEncodingException {
+        DataWriter dataWriter = null;
+
         if (dataContentType == DataContentType.AUTO_SELECT) {
             if (!fields.isEmpty()) {
                 if (fieldsHasFile()) {

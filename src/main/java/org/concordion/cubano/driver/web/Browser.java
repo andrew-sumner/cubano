@@ -27,7 +27,6 @@ public class Browser {
     private WebDriver wrappedDriver = null;
     private EventFiringWebDriver eventFiringDriver = null;
     private SeleniumEventLogger eventListener;
-    private boolean isRemoteDriver;
     private SessionId sessionId = null;
     private BrowserProvider browserConfig;
 
@@ -150,7 +149,6 @@ public class Browser {
 
         LOGGER.debug("Starting browser");
 
-        this.isRemoteDriver = config instanceof RemoteBrowserProvider;
         this.browserConfig = config;
 
         this.wrappedDriver = config.createDriver();
@@ -158,7 +156,7 @@ public class Browser {
         this.eventListener = new SeleniumEventLogger();
         this.eventFiringDriver.register(this.eventListener);
 
-        if (isRemoteDriver) {
+        if (isRemoteDriver()) {
             this.sessionId = ((RemoteWebDriver) getWrappedDriver()).getSessionId();
         } else {
             this.sessionId = null;

@@ -135,7 +135,7 @@ public class HttpEasyReader {
 
             String line = null;
             while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
 
             returned = sb.toString().trim();

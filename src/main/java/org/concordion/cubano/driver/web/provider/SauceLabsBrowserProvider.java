@@ -124,6 +124,13 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
         return details;
     }
 
+    /**
+     * Register a desktop browser.
+     *
+     * @param caps Desired capabilities
+     * @param browserName Type of browser
+     * @param browserVersion Version of the browser
+     */
     protected void desktop(DesiredCapabilities caps, String browserName, String browserVersion) {
         String platform = caps.getCapability(CapabilityType.PLATFORM).toString();
 
@@ -134,6 +141,12 @@ public class SauceLabsBrowserProvider extends RemoteBrowserProvider {
         this.setDetails(RemoteType.DESKTOP, browserName, DEFAULT_DESKTOP_VIEWPORT, caps);
     }
 
+    /**
+     * Register a desktop browser.
+     *
+     * @param caps Desired capabilities
+     * @param browserVersion Version of the browser
+     */
     protected void desktop(DesiredCapabilities caps, String browserVersion) {
         String browserName = caps.getCapability(CapabilityType.BROWSER_NAME).toString();
 

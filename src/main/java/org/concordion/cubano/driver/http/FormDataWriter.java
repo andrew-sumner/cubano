@@ -111,7 +111,7 @@ class FormDataWriter implements DataWriter {
         StringBuilder buf = new StringBuilder();
 
         writeFieldBoundary();
-        buf.append("Content-Disposition: form-data; name=\"" + name + "\"").append(LINE_FEED);
+        buf.append("Content-Disposition: form-data; name=\"").append(name).append("\"").append(LINE_FEED);
         // buf.append("Content-Type: text/plain; charset=utf-8").append(LINE_FEED);
         buf.append(LINE_FEED);
         buf.append(String.valueOf(value)).append(LINE_FEED);
@@ -151,11 +151,11 @@ class FormDataWriter implements DataWriter {
         StringBuilder buf = new StringBuilder();
 
         writeFieldBoundary();
-        buf.append("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"").append(LINE_FEED);
+        buf.append("Content-Disposition: form-data; name=\"").append(fieldName).append("\"; filename=\"").append(fileName).append("\"").append(LINE_FEED);
         if (type == null) {
-            buf.append("Content-Type: " + URLConnection.guessContentTypeFromName(fileName)).append(LINE_FEED);
+            buf.append("Content-Type: ").append(URLConnection.guessContentTypeFromName(fileName)).append(LINE_FEED);
         } else {
-            buf.append("Content-Type: " + type.toString()).append(LINE_FEED);
+            buf.append("Content-Type: ").append(type.toString()).append(LINE_FEED);
         }
 
         // buf.append("Content-Transfer-Encoding: binary").append(LINE_FEED);

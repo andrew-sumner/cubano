@@ -78,7 +78,7 @@ publishing {
             if (project.version.endsWith('-SNAPSHOT')) {
                 url "http://nexus.ssi.govt.nz/content/repositories/msd-snapshots-repository"
             } else {
-            	url "http://nexus.ssi.govt.nz/content/repositories/msd-releases-repository"
+                url "http://nexus.ssi.govt.nz/content/repositories/msd-releases-repository"
             }
             credentials {
                 username 'deployer'
