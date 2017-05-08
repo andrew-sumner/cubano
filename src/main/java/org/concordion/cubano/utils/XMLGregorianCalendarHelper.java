@@ -11,42 +11,41 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * Useful methods to play with XMLGregorianCalendar.
- * 
+ * <p>
  * <p>
  * Note: requires minimum of Java 1.8
  * </p>
- * 
+ *
  * @author Priya Narayanan
  */
 public class XMLGregorianCalendarHelper {
 
-	private XMLGregorianCalendarHelper() {
-	}
+    private XMLGregorianCalendarHelper() {
+    }
 
-	/**
-	 * Converts current date/time in XMLGregorianCalendar format.
-	 * 
-	 * @return XMLGregorianCalendar
-	 * @throws DatatypeConfigurationException, ParseException
-	 */
+    /**
+     * Converts current date/time in XMLGregorianCalendar format.
+     *
+     * @return XMLGregorianCalendar
+     * @throws DatatypeConfigurationException, ParseException
+     */
 
-	public static XMLGregorianCalendar getTodaysDateInXMLGregorian() throws DatatypeConfigurationException, ParseException {
-		return ISODateTimeFormat.toXMLGregorianCalendar(LocalDateTime.now());
-	}
+    public static XMLGregorianCalendar getTodaysDateInXMLGregorian() throws DatatypeConfigurationException, ParseException {
+        return ISODateTimeFormat.toXMLGregorianCalendar(LocalDateTime.now());
+    }
 
-	/**
-	 * 
-	 * @param startDate XMLGregorianCalendar
-	 * @param numOfDays Integer
-	 * @return XMLGregorianCalendar
-	 * @throws DatatypeConfigurationException
-	 */
+    /**
+     * @param startDate XMLGregorianCalendar
+     * @param numOfDays Integer
+     * @return XMLGregorianCalendar
+     * @throws DatatypeConfigurationException
+     */
 
-	public static XMLGregorianCalendar addDays(XMLGregorianCalendar startDate, int numOfDays) throws DatatypeConfigurationException {
+    public static XMLGregorianCalendar addDays(XMLGregorianCalendar startDate, int numOfDays) throws DatatypeConfigurationException {
 
-		GregorianCalendar calendar = startDate.toGregorianCalendar();
-		calendar.add(Calendar.DATE, numOfDays);
-		return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
-	}
+        GregorianCalendar calendar = startDate.toGregorianCalendar();
+        calendar.add(Calendar.DATE, numOfDays);
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+    }
 
 }

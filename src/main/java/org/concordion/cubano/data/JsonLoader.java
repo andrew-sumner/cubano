@@ -21,143 +21,143 @@ import com.google.gson.JsonElement;
 
 /**
  * Utility class for loading JSON files.
- * 
+ *
  * @author Andrew Sumner
  */
 public class JsonLoader {
-	private static final Logger LOGGER = LoggerFactory.getLogger(JsonLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonLoader.class);
 
-	private JsonLoader() {
-	}
+    private JsonLoader() {
+    }
 
-	/**
-	 * Read data file and deserialise into new class of requested type.
-	 * 
-	 * @param <T> Desired class
-	 * @param jsonFile Source file
-	 * @param clazz Desired class
-	 * @return Desired class populated from requested file
-	 * @throws IOException
-	 */
-	public static <T> T loadFile(String jsonFile, Class<T> clazz) throws IOException {
-		return loadFile(jsonFile, (Type) clazz);
-	}
+    /**
+     * Read data file and deserialise into new class of requested type.
+     *
+     * @param <T>      Desired class
+     * @param jsonFile Source file
+     * @param clazz    Desired class
+     * @return Desired class populated from requested file
+     * @throws IOException
+     */
+    public static <T> T loadFile(String jsonFile, Class<T> clazz) throws IOException {
+        return loadFile(jsonFile, (Type) clazz);
+    }
 
-	/**
-	 * Read data file and deserialise into new class of requested type.
-	 * 
-	 * @param <T> Desired class
-	 * @param jsonFile Source file
-	 * @param returnType Desired class
-	 * @return Desired class populated from requested file
-	 * @throws IOException
-	 */
-	public static <T> T loadFile(String jsonFile, Type returnType) throws IOException {
-		LOGGER.debug("Loading JSON file {}", jsonFile);
-		JsonReader json = new JsonReader(FileReader.readFile(jsonFile));
+    /**
+     * Read data file and deserialise into new class of requested type.
+     *
+     * @param <T>        Desired class
+     * @param jsonFile   Source file
+     * @param returnType Desired class
+     * @return Desired class populated from requested file
+     * @throws IOException
+     */
+    public static <T> T loadFile(String jsonFile, Type returnType) throws IOException {
+        LOGGER.debug("Loading JSON file {}", jsonFile);
+        JsonReader json = new JsonReader(FileReader.readFile(jsonFile));
 
-		Gson builder = new GsonBuilder()
-				.registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Deserializer())
-				.registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Serializer())
-				.create();
+        Gson builder = new GsonBuilder()
+                .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Deserializer())
+                .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Serializer())
+                .create();
 
-		T result = json.fromJson(builder, returnType);
+        T result = json.fromJson(builder, returnType);
 
-		validateAllDataLoaded(json.asJson(), result, "");
+        validateAllDataLoaded(json.asJson(), result, "");
 
-		return result;
-	}
+        return result;
+    }
 
-	private static void validateAllDataLoaded(JsonElement element, Object returnType, String entryName) throws IOException {
+    private static void validateAllDataLoaded(JsonElement element, Object returnType, String entryName) throws IOException {
 
-		if (element.isJsonNull()) {
-			return;
-		}
+        if (element.isJsonNull()) {
+            return;
+        }
 
-		if (element.isJsonArray()) {
-			checkFieldExists(entryName, returnType);
+        if (element.isJsonArray()) {
+            checkFieldExists(entryName, returnType);
 
-			JsonArray jsonArray = element.getAsJsonArray();
-			ArrayList<?> objArray = (ArrayList<?>) returnType;
-			
-			if (objArray.size() != jsonArray.size()) {
-				throw new IllegalStateException(String.format("Object array size %s does not match JSON array size %s", objArray.size(), jsonArray.size()));
-			}
-			
-			for (int index = 0; index < objArray.size(); index++) {
-				validateAllDataLoaded(jsonArray.get(index), objArray.get(index), entryName);
-			}
-		}
-		
-		if (element.isJsonObject()) {
-			checkFieldExists(entryName, returnType);
-			
-			for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
-				if (!entry.getValue().isJsonNull() && !entry.getValue().isJsonPrimitive()) {
-					validateAllDataLoaded(entry.getValue(), getField(entry.getKey(), returnType), "");
-				} else {
-					validateAllDataLoaded(entry.getValue(), returnType, entry.getKey());
-				}
-			}
-		}
+            JsonArray jsonArray = element.getAsJsonArray();
+            ArrayList<?> objArray = (ArrayList<?>) returnType;
 
-		if (element.isJsonPrimitive()) {
-			checkFieldExists(entryName, returnType);
-		}
-	}
+            if (objArray.size() != jsonArray.size()) {
+                throw new IllegalStateException(String.format("Object array size %s does not match JSON array size %s", objArray.size(), jsonArray.size()));
+            }
 
-	private static void checkFieldExists(String entryName, Object returnType) throws IOException {
-		if (entryName.isEmpty()) {
-			return;
-		}
+            for (int index = 0; index < objArray.size(); index++) {
+                validateAllDataLoaded(jsonArray.get(index), objArray.get(index), entryName);
+            }
+        }
 
-		List<Field> fields = getInheritedFields(returnType.getClass());
-		boolean exists = fields.stream().filter(f -> f.getName().equals(entryName)).count() == 1;
+        if (element.isJsonObject()) {
+            checkFieldExists(entryName, returnType);
 
-		if (!exists) {
-			throw new IOException("JSON element '" + entryName + "' is not a field in the destination class " + returnType.getClass().getName());
-		}
-	}
+            for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
+                if (!entry.getValue().isJsonNull() && !entry.getValue().isJsonPrimitive()) {
+                    validateAllDataLoaded(entry.getValue(), getField(entry.getKey(), returnType), "");
+                } else {
+                    validateAllDataLoaded(entry.getValue(), returnType, entry.getKey());
+                }
+            }
+        }
 
-	private static Object getField(String entryName, Object returnType) throws IOException {
-		if (entryName.isEmpty()) {
-			return null;
-		}
+        if (element.isJsonPrimitive()) {
+            checkFieldExists(entryName, returnType);
+        }
+    }
 
-		try {
-			Field field = getDeclaredField(entryName, returnType.getClass());
-			field.setAccessible(true);
+    private static void checkFieldExists(String entryName, Object returnType) throws IOException {
+        if (entryName.isEmpty()) {
+            return;
+        }
 
-			return field.get(returnType);
-		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			throw new IOException(e);
-		}
-	}
+        List<Field> fields = getInheritedFields(returnType.getClass());
+        boolean exists = fields.stream().filter(f -> f.getName().equals(entryName)).count() == 1;
 
-	private static Field getDeclaredField(String entryName, Class<?> clazz) throws NoSuchFieldException, SecurityException {
-		NoSuchFieldException lastException = null;
-		Class<?> current = clazz;
+        if (!exists) {
+            throw new IOException("JSON element '" + entryName + "' is not a field in the destination class " + returnType.getClass().getName());
+        }
+    }
 
-		while (current != null) {
-			try {
-				return current.getDeclaredField(entryName);
-			} catch (NoSuchFieldException e) {
-				lastException = e;
-			}
-			
-			current = current.getSuperclass();
-		}
+    private static Object getField(String entryName, Object returnType) throws IOException {
+        if (entryName.isEmpty()) {
+            return null;
+        }
 
-		throw lastException;
-	}
+        try {
+            Field field = getDeclaredField(entryName, returnType.getClass());
+            field.setAccessible(true);
 
-	private static List<Field> getInheritedFields(Class<?> type) {
-		List<Field> fields = new ArrayList<Field>();
+            return field.get(returnType);
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+            throw new IOException(e);
+        }
+    }
 
-		for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-			fields.addAll(Arrays.asList(c.getDeclaredFields()));
-		}
+    private static Field getDeclaredField(String entryName, Class<?> clazz) throws NoSuchFieldException, SecurityException {
+        NoSuchFieldException lastException = null;
+        Class<?> current = clazz;
 
-		return fields;
-	}
+        while (current != null) {
+            try {
+                return current.getDeclaredField(entryName);
+            } catch (NoSuchFieldException e) {
+                lastException = e;
+            }
+
+            current = current.getSuperclass();
+        }
+
+        throw lastException;
+    }
+
+    private static List<Field> getInheritedFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+
+        return fields;
+    }
 }

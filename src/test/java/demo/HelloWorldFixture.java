@@ -18,39 +18,39 @@ import org.junit.runner.RunWith;
 
 @RunWith(ConcordionRunner.class)
 public class HelloWorldFixture {
-	
-	@Extension
-	StoryboardExtension storyboard = new StoryboardExtension();
-	
-	@Extension
-	LoggingFormatterExtension logging = new LoggingFormatterExtension().registerListener(new StoryboardLogListener(storyboard));
-	
-	static Browser browser = new Browser();
-	
-	ReportLogger logger = ReportLoggerFactory.getReportLogger(HelloWorldFixture.class);
-	
-	public String getGreetingFailure() {
-		browser.getDriver().navigate().to("http://google.co.nz");
-		
-		logger.with()
-			.message("Hello World!")
-			.attachment("This is some data", "data.txt", MediaType.PLAIN_TEXT)
-			.marker(new StoryboardMarker("Hello", "Data", StockCardImage.TEXT, CardResult.SUCCESS))
-			.debug();
-		
-		return "Failed";
-	}
-	
-	public String getGreetingException() {
-		browser.getDriver().navigate().to("http://google.co.nz");
-				
-		Assert.fail("Frogs legs");
-		
-		return "Failed";
-	}
-	
-	@AfterSpecification
-	public void afterSpecification() {
-		browser.close();
-	}
+
+    @Extension
+    StoryboardExtension storyboard = new StoryboardExtension();
+
+    @Extension
+    LoggingFormatterExtension logging = new LoggingFormatterExtension().registerListener(new StoryboardLogListener(storyboard));
+
+    static Browser browser = new Browser();
+
+    ReportLogger logger = ReportLoggerFactory.getReportLogger(HelloWorldFixture.class);
+
+    public String getGreetingFailure() {
+        browser.getDriver().navigate().to("http://google.co.nz");
+
+        logger.with()
+                .message("Hello World!")
+                .attachment("This is some data", "data.txt", MediaType.PLAIN_TEXT)
+                .marker(new StoryboardMarker("Hello", "Data", StockCardImage.TEXT, CardResult.SUCCESS))
+                .debug();
+
+        return "Failed";
+    }
+
+    public String getGreetingException() {
+        browser.getDriver().navigate().to("http://google.co.nz");
+
+        Assert.fail("Frogs legs");
+
+        return "Failed";
+    }
+
+    @AfterSpecification
+    public void afterSpecification() {
+        browser.close();
+    }
 }

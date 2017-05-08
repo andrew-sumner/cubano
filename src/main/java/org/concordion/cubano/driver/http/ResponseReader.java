@@ -5,8 +5,8 @@ package org.concordion.cubano.driver.http;
  */
 public interface ResponseReader {
 
-	/**
-	 * @return The underlying data (eg XML or JSON document) as a nicely formatted string.
-	 */
-	public String asPrettyString() throws Exception;
+    /**
+     * @return The underlying data (eg XML or JSON document) as a nicely formatted string.
+     */
+    public String asPrettyString() throws Exception;
 }

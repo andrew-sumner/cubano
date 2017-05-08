@@ -114,7 +114,10 @@ dependencies {
 checkstyle {
 	toolVersion = '6.19'
 	ignoreFailures = true
-	configFile = new File("checkstyle-cyf-msd-5.xml")
+
+	// Using default location /config/checkstyle/checkstyle.xml
+	//configFile = new File("checkstyle.xml")
+
 	// Exclude other source sets
 	//sourceSets = [sourceSets.main, sourceSets.test]
 }

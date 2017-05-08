@@ -26,272 +26,274 @@ import io.github.bonigarcia.wdm.OperaDriverManager;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 
 /**
- * Provides everything required to start up a local desktop browser, currently supports chrome, ie and firefox 
- *
+ * Provides everything required to start up a local desktop browser, currently supports chrome, ie and firefox
+ * <p>
  * Browser drivers are automatically downloaded as required when requesting a browser: see https://github.com/bonigarcia/webdrivermanager for details
  * TODO: How configure proxy, download location and other customisation
- *  
+ *
  * @author Andrew Sumner
  */
 public class LocalBrowserProvider implements BrowserProvider {
-	private String browser;
-	private String browserSize;
-	private boolean maximised;
-	
-	public LocalBrowserProvider () {
-		browser = Config.getBrowser();
-		browserSize = Config.getBrowserSize();
-		maximised = true;
-	}
+    private String browser;
+    private String browserSize;
+    private boolean maximised;
 
-    /** @return A new Selenium WebDriver based on supplied configuration */
-	@Override
-	public WebDriver createDriver() {
-		WebDriver driver;
-		
-		// use web driver as specified in config.properties
-		switch (browser.toLowerCase()) {
-			case "chrome":
-				driver = createChromeDriver();
-				break;
-				
-			case "edge":
-				driver = createEdgeDriver();
-				break;
-			
-			case "firefox":
-				driver = createFireFoxDriver();
-				break;
-							
-			case "ie":
-			case "internetexplorer":
-				driver = createInternetExplorerDriver();
-				
-				break;
-				
-			case "opera":
-				driver = createOperaDriver();
-				break;
-				
-			case "phantomjs":
-				driver = createPhantomJsDriver();
-				break;
-					        	
-			default:
-				throw new RuntimeException("Browser '" + browser + "' is not currently supported");
-		}
-		
-		if (isViewPortDefined()) {
-			driver.manage().window().setSize(new Dimension(getViewPortWidth(), getViewPortHeight()));
-		} else if (maximised) {
-			driver.manage().window().maximize();
-		}
-		
-		return driver;
-	}
+    public LocalBrowserProvider() {
+        browser = Config.getBrowser();
+        browserSize = Config.getBrowserSize();
+        maximised = true;
+    }
 
-	protected WebDriver createChromeDriver() {
-		ChromeDriverManager.getInstance().setup();
-		
-		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+    /**
+     * @return A new Selenium WebDriver based on supplied configuration
+     */
+    @Override
+    public WebDriver createDriver() {
+        WebDriver driver;
 
-		addProxyCapabilities(capabilities);
-		
-		if (!Config.getBrowserExe().isEmpty()) {
-			ChromeOptions options = new ChromeOptions();
-			options.setBinary(Config.getBrowserExe());
-			capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-		}
-		
-		return new ChromeDriver(capabilities);
-	}
+        // use web driver as specified in config.properties
+        switch (browser.toLowerCase()) {
+            case "chrome":
+                driver = createChromeDriver();
+                break;
 
-	protected WebDriver createEdgeDriver() {
-		EdgeDriverManager.getInstance().setup();
-		
-		DesiredCapabilities capabilities = DesiredCapabilities.edge();
+            case "edge":
+                driver = createEdgeDriver();
+                break;
 
-		addProxyCapabilities(capabilities);
-		
-		return new EdgeDriver(capabilities);
-	}
-	
-	/*
-	 * For running portable firefox at same time as desktop version:
-	 * 		1. Edit FirefoxPortable.ini (next to FirefoxPortable.exe)
-	 * 		2. If its not there then copy from "Other/Source" folder
-	 * 		3. Change AllowMultipleInstances=false to true
-	 */
-	protected WebDriver createFireFoxDriver() {
-		FirefoxDriverManager.getInstance().setup();
-		
-		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-	
-		addProxyCapabilities(capabilities);
+            case "firefox":
+                driver = createFireFoxDriver();
+                break;
 
-		if (!Config.getBrowserExe().isEmpty()) {
-			// TODO Should we do this way?
+            case "ie":
+            case "internetexplorer":
+                driver = createInternetExplorerDriver();
+
+                break;
+
+            case "opera":
+                driver = createOperaDriver();
+                break;
+
+            case "phantomjs":
+                driver = createPhantomJsDriver();
+                break;
+
+            default:
+                throw new RuntimeException("Browser '" + browser + "' is not currently supported");
+        }
+
+        if (isViewPortDefined()) {
+            driver.manage().window().setSize(new Dimension(getViewPortWidth(), getViewPortHeight()));
+        } else if (maximised) {
+            driver.manage().window().maximize();
+        }
+
+        return driver;
+    }
+
+    protected WebDriver createChromeDriver() {
+        ChromeDriverManager.getInstance().setup();
+
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+
+        addProxyCapabilities(capabilities);
+
+        if (!Config.getBrowserExe().isEmpty()) {
+            ChromeOptions options = new ChromeOptions();
+            options.setBinary(Config.getBrowserExe());
+            capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        }
+
+        return new ChromeDriver(capabilities);
+    }
+
+    protected WebDriver createEdgeDriver() {
+        EdgeDriverManager.getInstance().setup();
+
+        DesiredCapabilities capabilities = DesiredCapabilities.edge();
+
+        addProxyCapabilities(capabilities);
+
+        return new EdgeDriver(capabilities);
+    }
+
+    /*
+     * For running portable firefox at same time as desktop version:
+     * 		1. Edit FirefoxPortable.ini (next to FirefoxPortable.exe)
+     * 		2. If its not there then copy from "Other/Source" folder
+     * 		3. Change AllowMultipleInstances=false to true
+     */
+    protected WebDriver createFireFoxDriver() {
+        FirefoxDriverManager.getInstance().setup();
+
+        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+
+        addProxyCapabilities(capabilities);
+
+        if (!Config.getBrowserExe().isEmpty()) {
+            // TODO Should we do this way?
 //			FirefoxOptions options = new FirefoxOptions();
 //			options.setBinary(Config.getBrowserExe());
 //			capabilities.setCapability(FirefoxDriver.CAPABILITY, options);
-			
-			 capabilities.setCapability(FirefoxDriver.BINARY, Config.getBrowserExe());
-		}
-		
-		if (Config.activatePlugins()) {
-			FirefoxProfile profile = new FirefoxProfile();
-			
-			try {
-				File firebug = Plugins.get("firebug");
-				profile.addExtension(firebug);
-				
-				String version = firebug.getName();
-				version = version.substring(version.indexOf("-") + 1);
-				version = version.substring(0, version.indexOf("-") > 0 ? version.indexOf("-") : version.indexOf("."));
-				
-				profile.setPreference("extensions.firebug.currentVersion", version);
-				
-				profile.addExtension(Plugins.get("firepath"));
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to add FireFox plugins", e);
-			}
-			
-			capabilities.setCapability(FirefoxDriver.PROFILE, profile);
-		}
-		
-		return new FirefoxDriver(capabilities);
-	}
-	
-	protected WebDriver createInternetExplorerDriver() {
-		InternetExplorerDriverManager.getInstance().setup();
-		
-		DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
-		
-		// capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-		// "ignore", "accept", or "dismiss".
-		// capabilities.setCapability(InternetExplorerDriver.UNEXPECTED_ALERT_BEHAVIOR, "dismiss");
 
-		// capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-		  
-		addProxyCapabilities(capabilities);
-		
-		return new InternetExplorerDriver(capabilities);
-	}
+            capabilities.setCapability(FirefoxDriver.BINARY, Config.getBrowserExe());
+        }
 
-	protected WebDriver createOperaDriver() {
-		OperaDriverManager.getInstance().setup();
-		
-		DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
+        if (Config.activatePlugins()) {
+            FirefoxProfile profile = new FirefoxProfile();
 
-		addProxyCapabilities(capabilities);
-		
-		if (!Config.getBrowserExe().isEmpty()) {
-			OperaOptions options = new OperaOptions();
-			options.setBinary(Config.getBrowserExe());
-			capabilities.setCapability(OperaOptions.CAPABILITY, options);
-		}
-		
-		return new OperaDriver(capabilities);
-	}
+            try {
+                File firebug = Plugins.get("firebug");
+                profile.addExtension(firebug);
 
-	protected WebDriver createPhantomJsDriver() {
-		PhantomJsDriverManager.getInstance().setup();
-		
-		DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
+                String version = firebug.getName();
+                version = version.substring(version.indexOf("-") + 1);
+                version = version.substring(0, version.indexOf("-") > 0 ? version.indexOf("-") : version.indexOf("."));
 
-		addProxyCapabilities(capabilities);
-				
-		return new PhantomJSDriver(capabilities);
-	}
+                profile.setPreference("extensions.firebug.currentVersion", version);
 
-	protected void addProxyCapabilities(DesiredCapabilities capabilities) {
-		if (!Config.isProxyRequired()) {
-			return;
-		}
-			
-		String browserProxy = Config.getProxyHost() + ":" + Config.getProxyPort();
-		String browserNoProxyList = Config.getNoProxyList();
+                profile.addExtension(Plugins.get("firepath"));
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to add FireFox plugins", e);
+            }
 
-		final org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
-		proxy.setProxyType(org.openqa.selenium.Proxy.ProxyType.MANUAL);
-		proxy.setHttpProxy(browserProxy);
-		proxy.setFtpProxy(browserProxy);
-		proxy.setSslProxy(browserProxy);
-		proxy.setNoProxy(browserNoProxyList);
-		
-		capabilities.setCapability(CapabilityType.PROXY, proxy);
-		capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-	}
-	
+            capabilities.setCapability(FirefoxDriver.PROFILE, profile);
+        }
 
-	public boolean isViewPortDefined() {
-		return browserSize != null && !browserSize.isEmpty(); 
-	}
+        return new FirefoxDriver(capabilities);
+    }
+
+    protected WebDriver createInternetExplorerDriver() {
+        InternetExplorerDriverManager.getInstance().setup();
+
+        DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+
+        // capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+        // "ignore", "accept", or "dismiss".
+        // capabilities.setCapability(InternetExplorerDriver.UNEXPECTED_ALERT_BEHAVIOR, "dismiss");
+
+        // capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+
+        addProxyCapabilities(capabilities);
+
+        return new InternetExplorerDriver(capabilities);
+    }
+
+    protected WebDriver createOperaDriver() {
+        OperaDriverManager.getInstance().setup();
+
+        DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
+
+        addProxyCapabilities(capabilities);
+
+        if (!Config.getBrowserExe().isEmpty()) {
+            OperaOptions options = new OperaOptions();
+            options.setBinary(Config.getBrowserExe());
+            capabilities.setCapability(OperaOptions.CAPABILITY, options);
+        }
+
+        return new OperaDriver(capabilities);
+    }
+
+    protected WebDriver createPhantomJsDriver() {
+        PhantomJsDriverManager.getInstance().setup();
+
+        DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
+
+        addProxyCapabilities(capabilities);
+
+        return new PhantomJSDriver(capabilities);
+    }
+
+    protected void addProxyCapabilities(DesiredCapabilities capabilities) {
+        if (!Config.isProxyRequired()) {
+            return;
+        }
+
+        String browserProxy = Config.getProxyHost() + ":" + Config.getProxyPort();
+        String browserNoProxyList = Config.getNoProxyList();
+
+        final org.openqa.selenium.Proxy proxy = new org.openqa.selenium.Proxy();
+        proxy.setProxyType(org.openqa.selenium.Proxy.ProxyType.MANUAL);
+        proxy.setHttpProxy(browserProxy);
+        proxy.setFtpProxy(browserProxy);
+        proxy.setSslProxy(browserProxy);
+        proxy.setNoProxy(browserNoProxyList);
+
+        capabilities.setCapability(CapabilityType.PROXY, proxy);
+        capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+    }
 
 
-	@Override
-	public String getViewPort() {
-		return browserSize;
-	}
-	
-	@Override
-	public int getViewPortWidth() {
-		if (browserSize == null || browserSize.isEmpty()) {
-			return -1;
-		}
-
-		String width = browserSize.substring(0, browserSize.indexOf("x")).trim(); 
-
-		return Integer.parseInt(width);
-	}
-
-	@Override
-	public int getViewPortHeight() {
-		if (browserSize == null || browserSize.isEmpty()) {
-			return -1;
-		}
-
-		String height = browserSize.substring(browserSize.indexOf("x") + 1).trim();
-
-		return Integer.parseInt(height);
-	}
+    public boolean isViewPortDefined() {
+        return browserSize != null && !browserSize.isEmpty();
+    }
 
 
-	@Override
-	public RemoteType getDeviceType() {
-		return RemoteType.DESKTOP;
-	}
-	
-	@Override
-	public String getDeviceName() {
-		return "Desktop";
-	}
+    @Override
+    public String getViewPort() {
+        return browserSize;
+    }
 
-	@Override
-	public String getBrowser() {
-		return browser;
-	}
+    @Override
+    public int getViewPortWidth() {
+        if (browserSize == null || browserSize.isEmpty()) {
+            return -1;
+        }
 
-	/**
-	 * Helper for finding Browser plug-ins stored in the libs folder..
-	 */
-	private static class Plugins {
-		public static File get(final String pluginName) {
-			File search = new File("libs");
-			
-			String[] files = search.list(new FilenameFilter() {
-				
-				@Override
-				public boolean accept(File dir, String name) {
-					return name.contains(pluginName);
-				}
-			});
-			
-			if (files != null && files.length > 0) {
-				return new File(search, files[0]);
-			}
-			
-			return null;
-		}
-	}
+        String width = browserSize.substring(0, browserSize.indexOf("x")).trim();
+
+        return Integer.parseInt(width);
+    }
+
+    @Override
+    public int getViewPortHeight() {
+        if (browserSize == null || browserSize.isEmpty()) {
+            return -1;
+        }
+
+        String height = browserSize.substring(browserSize.indexOf("x") + 1).trim();
+
+        return Integer.parseInt(height);
+    }
+
+
+    @Override
+    public RemoteType getDeviceType() {
+        return RemoteType.DESKTOP;
+    }
+
+    @Override
+    public String getDeviceName() {
+        return "Desktop";
+    }
+
+    @Override
+    public String getBrowser() {
+        return browser;
+    }
+
+    /**
+     * Helper for finding Browser plug-ins stored in the libs folder..
+     */
+    private static class Plugins {
+        public static File get(final String pluginName) {
+            File search = new File("libs");
+
+            String[] files = search.list(new FilenameFilter() {
+
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.contains(pluginName);
+                }
+            });
+
+            if (files != null && files.length > 0) {
+                return new File(search, files[0]);
+            }
+
+            return null;
+        }
+    }
 }

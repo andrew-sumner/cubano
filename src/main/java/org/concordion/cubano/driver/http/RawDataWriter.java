@@ -16,106 +16,105 @@ import org.slf4j.Logger;
 import com.google.common.net.MediaType;
 
 /**
- * Attach a File or data to an http request. 
- * 
+ * Attach a File or data to an http request.
+ *
  * @author Andrew Sumner
  */
 class RawDataWriter implements DataWriter {
-	private HttpURLConnection connection;
-	private byte[] postEndcoded = null;
-	private File uploadFile = null;
-	private InputStream uploadStream = null;
-	private String uploadFileName;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param connection The connection
-	 * @param rawData data (File or String)
-	 * @param rawDataMediaType Type of attachment
-	 * @param fileName file name for InputStream
-	 * 
-	 * @throws UnsupportedEncodingException
-	 */
-	public RawDataWriter(HttpURLConnection connection, Object rawData, MediaType rawDataMediaType, String fileName) {
-		this.connection = connection;
-		
-		if (rawData instanceof File) {
-			uploadFile = (File) rawData;
-			connection.setRequestProperty("Content-Type", rawDataMediaType.toString());
-			connection.setRequestProperty("Content-Length", Long.toString(uploadFile.length()));
+    private HttpURLConnection connection;
+    private byte[] postEndcoded = null;
+    private File uploadFile = null;
+    private InputStream uploadStream = null;
+    private String uploadFileName;
 
-		} else if (rawData instanceof InputStream) {
-			uploadStream = (InputStream) rawData;
-			uploadFileName = fileName;
+    /**
+     * Constructor.
+     *
+     * @param connection       The connection
+     * @param rawData          data (File or String)
+     * @param rawDataMediaType Type of attachment
+     * @param fileName         file name for InputStream
+     * @throws UnsupportedEncodingException
+     */
+    public RawDataWriter(HttpURLConnection connection, Object rawData, MediaType rawDataMediaType, String fileName) {
+        this.connection = connection;
 
-			connection.setRequestProperty("Content-Type", rawDataMediaType.toString());
-		} else {
-			// Assume data is encoded correctly
-			//this.postEndcoded = rawData.getBytes(URLEncoder.encode(String.valueOf(data), "UTF-8"));
-			this.postEndcoded = String.valueOf(rawData).getBytes(StandardCharsets.UTF_8);
-			
-			connection.setRequestProperty("charset", "utf-8");
-			connection.setRequestProperty("Content-Type", rawDataMediaType.toString());
-			connection.setRequestProperty("Content-Length", Integer.toString(postEndcoded.length));
-		}
-	}
+        if (rawData instanceof File) {
+            uploadFile = (File) rawData;
+            connection.setRequestProperty("Content-Type", rawDataMediaType.toString());
+            connection.setRequestProperty("Content-Length", Long.toString(uploadFile.length()));
 
-	@Override
-	public void write(Logger logger) throws IOException {
-		StringBuilder logBuffer = null;
+        } else if (rawData instanceof InputStream) {
+            uploadStream = (InputStream) rawData;
+            uploadFileName = fileName;
 
-		if (logger != null) {
-			logBuffer = new StringBuilder();
-		}
+            connection.setRequestProperty("Content-Type", rawDataMediaType.toString());
+        } else {
+            // Assume data is encoded correctly
+            //this.postEndcoded = rawData.getBytes(URLEncoder.encode(String.valueOf(data), "UTF-8"));
+            this.postEndcoded = String.valueOf(rawData).getBytes(StandardCharsets.UTF_8);
 
-		if (uploadFile != null) {
-			if (logBuffer != null) {
-				logBuffer.append("... Content of file ").append(uploadFile.getAbsolutePath()).append(" ...").append(System.lineSeparator());
-			}
+            connection.setRequestProperty("charset", "utf-8");
+            connection.setRequestProperty("Content-Type", rawDataMediaType.toString());
+            connection.setRequestProperty("Content-Length", Integer.toString(postEndcoded.length));
+        }
+    }
 
-			try (FileInputStream inputStream = new FileInputStream(uploadFile)) {
-				write(inputStream);
-			}
+    @Override
+    public void write(Logger logger) throws IOException {
+        StringBuilder logBuffer = null;
 
-		} else if (uploadStream != null) {
-			if (logBuffer != null) {
-				logBuffer.append("... Content of file ").append(uploadFileName).append(" ...").append(System.lineSeparator());
-			}
+        if (logger != null) {
+            logBuffer = new StringBuilder();
+        }
 
-			long length = write(uploadStream);
-			connection.setRequestProperty("Content-Length", Long.toString(length));
+        if (uploadFile != null) {
+            if (logBuffer != null) {
+                logBuffer.append("... Content of file ").append(uploadFile.getAbsolutePath()).append(" ...").append(System.lineSeparator());
+            }
 
-		} else {
-			if (logBuffer != null) {
-				logBuffer.append(Arrays.toString(postEndcoded));
-			}
+            try (FileInputStream inputStream = new FileInputStream(uploadFile)) {
+                write(inputStream);
+            }
 
-			try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-				wr.write(postEndcoded);
-			}
-		}
+        } else if (uploadStream != null) {
+            if (logBuffer != null) {
+                logBuffer.append("... Content of file ").append(uploadFileName).append(" ...").append(System.lineSeparator());
+            }
 
-		if (logger != null) {
-			logger.trace("With Content:{}\t{}", System.lineSeparator(), logBuffer);
-		}
-	}
-	
-	private long write(InputStream inputStream) throws IOException {
-		long length = 0;
-		byte[] buffer = new byte[4096];
-		int bytesRead = -1;
+            long length = write(uploadStream);
+            connection.setRequestProperty("Content-Length", Long.toString(length));
 
-		OutputStream outputStream = connection.getOutputStream();
+        } else {
+            if (logBuffer != null) {
+                logBuffer.append(Arrays.toString(postEndcoded));
+            }
 
-		while ((bytesRead = inputStream.read(buffer)) != -1) {
-			outputStream.write(buffer, 0, bytesRead);
-			length += bytesRead;
-		}
+            try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+                wr.write(postEndcoded);
+            }
+        }
 
-		outputStream.flush();
+        if (logger != null) {
+            logger.trace("With Content:{}\t{}", System.lineSeparator(), logBuffer);
+        }
+    }
 
-		return length;
-	}
+    private long write(InputStream inputStream) throws IOException {
+        long length = 0;
+        byte[] buffer = new byte[4096];
+        int bytesRead = -1;
+
+        OutputStream outputStream = connection.getOutputStream();
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+            length += bytesRead;
+        }
+
+        outputStream.flush();
+
+        return length;
+    }
 
 }
