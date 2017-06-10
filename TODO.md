@@ -2,3 +2,4 @@
 - [ ] create CONTRIBUTING.md, for example https://github.com/concordion/concordion/blob/master/CONTRIBUTING.md
 - [ ] ensure that webdriver code can be split into separate module
 - [ ] ensure that web service code can be split into separate module
+- [ ] create Travis build
