@@ -3,3 +3,5 @@
 - [ ] ensure that webdriver code can be split into separate module
 - [ ] ensure that web service code can be split into separate module
 - [ ] create Travis build
+- [ ] fix broken demo HelloWorld in Cubano 
+- [ ] add tests
