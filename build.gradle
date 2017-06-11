@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'findbugs'
 apply plugin: 'checkstyle'
 apply plugin: 'eclipse'
+apply plugin: 'jacoco'
 
 // need utf-8 to get text with non-standard chars e.g. curly apostrophes used correctly 
 tasks.withType(JavaCompile) {
@@ -154,7 +155,7 @@ task wrapper(type: Wrapper) {
 
 test {
     //include '**/Specification.*'
-    exclude '**/demo/*.*'
+    //exclude '**/demo/*.*'
 
     // Pass through all supplied system properties - excluding those containing '.' as some of these system properties introduce JNA incompatibility issues
     System.properties.each { k, v ->
